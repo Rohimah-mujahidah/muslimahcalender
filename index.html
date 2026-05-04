@@ -223,24 +223,27 @@
         };
         const safeSetItem = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} };
 
-        // Hijri Converter menggunakan Intl dengan Offset
+        // PENGATURAN BULAN HIJRIAH (HARDCODED UNTUK MENCEGAH BUG BROWSER)
+        const hijriMonthsMap = {
+            id: ['Muharram', 'Safar', 'Rabiul Awal', 'Rabiul Akhir', 'Jumadil Awal', 'Jumadil Akhir', 'Rajab', 'Syakban', 'Ramadan', 'Syawal', 'Zulkaidah', 'Zulhijah'],
+            ar: ['محرم', 'صفر', 'ربيع الأول', 'ربيع الآخر', 'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة']
+        };
+
         const getHijriDateDetails = (baseDate, offsetDays, lang) => {
             const date = new Date(baseDate.getTime() + offsetDays * 86400000); // Terapkan Matla' Offset
             
-            const locale = lang === 'ar' ? 'ar-SA-u-ca-islamic' : 'id-ID-u-ca-islamic';
-            
-            // FormatToParts untuk mengambil string murni tanpa harus regex yang memotong huruf (seperti kasus "Muharram")
+            // Dapatkan angka numerik dari format tanggal Islamic (paling stabil di semua browser)
             const partsDay = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric' }).formatToParts(date);
-            const partsMonthStr = new Intl.DateTimeFormat(locale, { month: 'long' }).formatToParts(date);
             const partsMonthNum = new Intl.DateTimeFormat('en-US-u-ca-islamic', { month: 'numeric' }).formatToParts(date);
             const partsYear = new Intl.DateTimeFormat('en-US-u-ca-islamic', { year: 'numeric' }).formatToParts(date);
             
-            const monthStrValue = partsMonthStr.find(p => p.type === 'month').value;
+            const monthNum = parseInt(partsMonthNum.find(p => p.type === 'month').value, 10);
+            const monthStrValue = hijriMonthsMap[lang][monthNum - 1]; // Pastikan selalu dapat bulan Hijriah yang benar
             
             return {
-                day: parseInt(partsDay.find(p => p.type === 'day').value),
+                day: parseInt(partsDay.find(p => p.type === 'day').value, 10),
                 monthStr: monthStrValue,
-                monthNum: parseInt(partsMonthNum.find(p => p.type === 'month').value),
+                monthNum: monthNum,
                 year: partsYear.find(p => p.type === 'year').value
             };
         };
@@ -482,42 +485,42 @@
                         <div className="grid lg:grid-cols-3 gap-6 md:gap-8">
                             
                             {/* LEFT PANEL: CALENDAR */}
-                            <div className={`lg:col-span-2 ${theme.panel} backdrop-blur-md rounded-3xl p-5 md:p-8 border relative overflow-hidden`}>
+                            <div className={`lg:col-span-2 ${theme.panel} backdrop-blur-md rounded-3xl p-3 sm:p-5 md:p-8 border relative overflow-hidden`}>
                                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
                                 <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
 
                                 <div className="relative z-10">
                                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
                                         <div className="text-center sm:text-start">
-                                            <h2 className="text-2xl md:text-3xl font-bold font-mono tracking-tight text-gradient" dir="ltr">
+                                            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-mono tracking-tight text-gradient" dir="ltr">
                                                 {currentDate.toLocaleString(language === 'ar' ? 'ar-SA' : 'id-ID', { month: 'long' })} {formatNumber(currentDate.getFullYear(), language)} {language === 'ar' ? 'م' : 'M'}
                                             </h2>
                                             <p className={`text-sm md:text-base font-medium mt-1 ${theme.textMuted}`}>
                                                 {currentHijriInfo.monthStr} {formatNumber(currentHijriInfo.year, language)} {language === 'ar' ? 'هـ' : 'H'}
                                             </p>
                                         </div>
-                                        <div className={`flex items-center gap-3 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                        <div className={`flex items-center gap-2 sm:gap-3 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
                                             <button onClick={prevMonth} className={`p-2 rounded-full ${theme.card} ${theme.hoverCard} border transition-all hover:scale-105`}>
-                                                <IconChevronLeft className="w-5 h-5" />
+                                                <IconChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                                             </button>
-                                            <button onClick={goToday} className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-feminine text-white shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5">
+                                            <button onClick={goToday} className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-gradient-feminine text-white shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5">
                                                 {tString.today}
                                             </button>
                                             <button onClick={nextMonth} className={`p-2 rounded-full ${theme.card} ${theme.hoverCard} border transition-all hover:scale-105`}>
-                                                <IconChevronRight className="w-5 h-5" />
+                                                <IconChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                                             </button>
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-7 gap-2 mb-2 text-center">
+                                    <div className="grid grid-cols-7 gap-1 sm:gap-2 md:gap-3 mb-2 text-center">
                                         {tString.days.map((day, idx) => (
-                                            <div key={day} className={`text-xs md:text-sm font-bold uppercase ${idx === 0 || idx === 6 ? 'text-rose-400' : theme.textMuted}`}>
+                                            <div key={day} className={`text-[10px] sm:text-xs md:text-sm font-bold uppercase ${idx === 0 || idx === 6 ? 'text-rose-400' : theme.textMuted}`}>
                                                 {day}
                                             </div>
                                         ))}
                                     </div>
 
-                                    <div className="grid grid-cols-7 gap-2 md:gap-3">
+                                    <div className="grid grid-cols-7 gap-1 sm:gap-2 md:gap-3">
                                         {grid.map((item, idx) => {
                                             const isSelected = formatDateKey(item.date) === selectedDateKey;
                                             const isToday = formatDateKey(item.date) === formatDateKey(new Date());
@@ -528,760 +531,26 @@
                                                 <div 
                                                     key={idx} onClick={() => setSelectedDate(item.date)}
                                                     className={`
-                                                        relative cursor-pointer rounded-xl md:rounded-2xl p-2 md:p-3 min-h-[60px] md:min-h-[85px] flex flex-col justify-between border transition-all duration-300 transform 
+                                                        relative cursor-pointer rounded-lg md:rounded-2xl p-1.5 md:p-3 min-h-[55px] sm:min-h-[70px] md:min-h-[85px] flex flex-col justify-between border transition-all duration-300 transform overflow-hidden
                                                         ${!item.isCurrentMonth ? 'opacity-40 grayscale' : ''}
-                                                        ${isSelected ? 'bg-gradient-feminine text-white shadow-[0_10px_20px_rgb(140,82,255,0.3)] scale-105 z-10 border-transparent' : `${theme.card} ${theme.hoverCard} ${theme.border} hover:-translate-y-1`}
+                                                        ${isSelected ? 'bg-gradient-feminine text-white shadow-[0_4px_15px_rgb(140,82,255,0.4)] scale-105 z-10 border-transparent' : `${theme.card} ${theme.hoverCard} ${theme.border} hover:-translate-y-1`}
                                                     `}
                                                 >
-                                                    <div className="flex justify-between items-start w-full" dir="ltr">
-                                                        <span className={`text-[10px] md:text-xs font-bold opacity-80 ${isSelected ? 'text-fuchsia-100' : 'text-primary'}`}>
+                                                    <div className="flex justify-between items-start w-full relative" dir="ltr">
+                                                        <span className={`text-[9px] sm:text-[10px] md:text-xs font-bold leading-none mt-0.5 ${isSelected ? 'text-fuchsia-100' : 'text-primary opacity-80'}`}>
                                                             {formatNumber(item.hijri.day, language)}
                                                         </span>
-                                                        <span className={`text-sm md:text-lg font-bold font-mono ${isSelected ? 'text-white' : (isToday ? 'text-primary' : theme.text)}`}>
+                                                        <span className={`text-xs sm:text-sm md:text-lg font-bold font-mono leading-none ${isSelected ? 'text-white' : (isToday ? 'text-primary' : theme.text)}`}>
                                                             {formatNumber(item.day, language)}
                                                         </span>
                                                     </div>
                                                     
-                                                    <div className="mt-auto pt-1 w-full flex flex-wrap justify-center gap-1">
+                                                    <div className="mt-auto pt-1 w-full flex flex-wrap justify-center gap-0.5 md:gap-1">
                                                         {hasIslamicEvent && item.islamicEvents.map((ev, i) => (
-                                                            <div key={i} title={ev.title} className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${ev.type === 'hari_besar' ? 'bg-rose-500' : (ev.type === 'puasa_wajib' ? 'bg-amber-400' : 'bg-emerald-400')}`}></div>
+                                                            <div key={i} title={ev.title} className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${ev.type === 'hari_besar' ? 'bg-rose-500' : (ev.type === 'puasa_wajib' ? 'bg-amber-400' : 'bg-emerald-400')}`}></div>
                                                         ))}
                                                         {hasUserEvent && (
-                                                            <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${isSelected ? 'bg-white' : 'bg-primary'} animate-pulse`}></div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* RIGHT PANEL: JADWAL HARIAN */}
-                            <div className={`lg:col-span-1 ${theme.panel} backdrop-blur-md rounded-3xl p-5 md:p-6 border flex flex-col h-full max-h-[800px]`}>
-                                <div className="mb-6 border-b border-fuchsia-500/20 pb-4 flex justify-between items-center">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gradient">{tString.dailyAgenda}</h3>
-                                        <p className={`text-sm mt-1 font-medium ${theme.textMuted}`} dir="ltr">
-                                            {language === 'ar' ? formatNumber(selectedDate.toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), 'ar') : selectedDate.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} {language === 'ar' ? 'م' : 'M'}
-                                        </p>
-                                        <p className={`text-[10px] uppercase font-bold tracking-widest mt-0.5 text-primary`} dir="ltr">
-                                            {formatNumber(selectedHijriInfo.day, language)} {selectedHijriInfo.monthStr} {formatNumber(selectedHijriInfo.year, language)} {language === 'ar' ? 'هـ' : 'H'}
-                                        </p>
-                                    </div>
-                                    <button 
-                                        onClick={() => setIsFormOpen(!isFormOpen)}
-                                        className="w-10 h-10 rounded-full bg-gradient-feminine text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform flex-shrink-0"
-                                    >
-                                        <IconPlus className={`w-5 h-5 transition-transform duration-300 ${isFormOpen ? 'rotate-45' : ''}`} />
-                                    </button>
-                                </div>
-
-                                {isFormOpen && (
-                                    <form onSubmit={handleAddEvent} className={`mb-6 p-4 rounded-2xl border ${theme.border} bg-fuchsia-500/5 animate-fade-in`}>
-                                        <div className="mb-3">
-                                            <input type="text" placeholder={tString.titleLabel} required value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm font-medium`} />
-                                        </div>
-                                        <div className="flex gap-3 mb-3">
-                                            <div className="flex-1">
-                                                <label className={`block text-[10px] uppercase mb-1 font-bold ${theme.textMuted}`}>{tString.start}</label>
-                                                <input type="time" required value={newEvent.start} onChange={e => setNewEvent({...newEvent, start: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-bold`} />
-                                            </div>
-                                            <div className="flex-1">
-                                                <label className={`block text-[10px] uppercase mb-1 font-bold ${theme.textMuted}`}>{tString.end}</label>
-                                                <input type="time" required value={newEvent.end} onChange={e => setNewEvent({...newEvent, end: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-bold`} />
-                                            </div>
-                                        </div>
-                                        <div className="mb-4">
-                                            <textarea placeholder={tString.descPlaceholder} rows="2" value={newEvent.desc} onChange={e => setNewEvent({...newEvent, desc: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm resize-none`}></textarea>
-                                        </div>
-                                        <button type="submit" className="w-full py-2.5 rounded-xl bg-gradient-feminine text-white text-sm font-bold shadow-md hover:shadow-lg transition-all">
-                                            {tString.saveAgenda}
-                                        </button>
-                                    </form>
-                                )}
-
-                                <div className={`flex-1 overflow-y-auto pb-4 space-y-4 ${language === 'ar' ? 'pl-2' : 'pr-2'}`}>
-                                    
-                                    {selectedIslamicEvents.map((event, idx) => (
-                                        <div key={`islamic-${idx}`} className={`p-4 rounded-2xl border ${isDayTime ? getEventColor(event.type) : getDarkEventColor(event.type)} relative overflow-hidden group animate-fade-in shadow-sm`}>
-                                            <div className={`absolute top-0 ${language === 'ar' ? 'right-0' : 'left-0'} bottom-0 w-1.5 ${getRibbonColor(event.type)}`}></div>
-                                            
-                                            <div className={`${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    {getIconForType(event.type)}
-                                                    <h4 className="font-bold text-base md:text-lg tracking-tight leading-tight">{event.title}</h4>
-                                                </div>
-                                                <div className="inline-block px-2 py-0.5 rounded-md bg-black/5 text-[10px] font-bold uppercase tracking-wider mb-3">
-                                                    {event.desc}
-                                                </div>
-                                                
-                                                <div className="space-y-2 mt-2">
-                                                    <div className="flex items-start gap-2">
-                                                        <IconBookOpen className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
-                                                        <p className="text-[11px] leading-relaxed italic opacity-90"><strong className="not-italic opacity-100">{tString.dalilLabel}:</strong> {event.dalil}</p>
-                                                    </div>
-                                                    <div className="flex items-start gap-2">
-                                                        <IconAward className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
-                                                        <p className="text-[11px] leading-relaxed opacity-90"><strong className="opacity-100">{tString.keutamaanLabel}:</strong> {event.keutamaan}</p>
-                                                    </div>
-                                                </div>
-
-                                                <div className="mt-4 flex gap-2">
-                                                    <button onClick={() => exportToGoogle(event, true)} className="flex-1 py-1.5 px-2 bg-black/5 hover:bg-black/10 border border-black/10 rounded-lg text-[10px] font-bold uppercase flex items-center justify-center gap-1 transition-colors">
-                                                        {tString.exportGoogle}
-                                                    </button>
-                                                    <button onClick={() => exportToApple(event, true)} className="flex-1 py-1.5 px-2 bg-black/5 hover:bg-black/10 border border-black/10 rounded-lg text-[10px] font-bold uppercase flex items-center justify-center gap-1 transition-colors">
-                                                        {tString.exportApple}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-
-                                    {currentDayEvents.map(event => (
-                                        <div key={event.id} className={`p-4 rounded-2xl border ${theme.border} ${theme.card} group animate-fade-in relative overflow-hidden shadow-sm`}>
-                                            <div className={`absolute top-0 ${language === 'ar' ? 'right-0' : 'left-0'} bottom-0 w-1 bg-gradient-feminine`}></div>
-                                            <div className={`flex justify-between items-start ${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
-                                                <div className={`flex-1 ${language === 'ar' ? 'pl-3' : 'pr-3'}`}>
-                                                    <h4 className={`font-bold text-base mb-1 ${theme.text}`}>{event.title}</h4>
-                                                    <div className={`flex items-center gap-1.5 text-xs font-mono font-medium ${theme.textMuted} mb-2`} dir="ltr">
-                                                        <IconClock className="w-3.5 h-3.5" /> {formatNumber(event.start, language)} - {formatNumber(event.end, language)}
-                                                    </div>
-                                                    {event.desc && (
-                                                        <p className={`text-[11px] ${theme.textMuted} leading-relaxed line-clamp-3`}>{event.desc}</p>
-                                                    )}
-                                                </div>
-                                                <button onClick={() => handleDeleteEvent(selectedDateKey, event.id)} className="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition-colors">
-                                                    <IconTrash className="w-4 h-4" />
-                                                </button>
-                                            </div>
-
-                                            <div className={`mt-4 flex gap-2 ${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
-                                                <button onClick={() => exportToGoogle(event)} className="flex-1 py-1.5 px-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition-colors">
-                                                    {tString.exportGoogle}
-                                                </button>
-                                                <button onClick={() => exportToApple(event)} className={`flex-1 py-1.5 px-2 bg-slate-500/10 hover:bg-slate-500/20 ${isDayTime ? 'text-slate-700' : 'text-slate-300'} border border-slate-500/20 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition-colors`}>
-                                                    {tString.exportApple}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-
-                                    {currentDayEvents.length === 0 && selectedIslamicEvents.length === 0 && (
-                                        <div className="flex flex-col items-center justify-center h-40 opacity-60">
-                                            <IconCalendar className={`w-12 h-12 mb-3 ${theme.textMuted}`} />
-                                            <p className={`text-sm font-medium ${theme.textMuted}`}>{tString.noAgenda}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* MODAL PENGATURAN */}
-                    {isSettingsOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1a1128]/80 backdrop-blur-sm p-4 animate-fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                            <div className={`${theme.panel} border w-full max-w-lg rounded-3xl p-6 md:p-8 relative shadow-2xl`}>
-                                <button onClick={() => setIsSettingsOpen(false)} className={`absolute top-4 ${language === 'ar' ? 'left-4' : 'right-4'} p-2 rounded-full hover:bg-fuchsia-500/20 transition-colors ${theme.text}`}>
-                                    <IconX className="w-6 h-6" />
-                                </button>
-                                
-                                <h2 className={`text-xl md:text-2xl font-bold mb-6 flex items-center gap-3 text-gradient border-b ${theme.border} pb-4`}>
-                                    <IconSettings className="w-7 h-7 text-primary" /> {tString.settings}
-                                </h2>
-
-                                <div className="space-y-5">
-                                    <div>
-                                        <label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.personalGreeting}</label>
-                                        <input type="text" name="userName" value={userName} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm`} />
-                                    </div>
-
-                                    <div>
-                                        <label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.language}</label>
-                                        <div className="flex rounded-xl overflow-hidden border border-primary">
-                                            <button onClick={() => {setLanguage('id'); safeSetItem('cal_lang', 'id')}} className={`flex-1 py-2 text-sm font-bold transition-colors ${language === 'id' ? 'bg-primary text-white' : `${theme.inputBg}`}`}>Indonesia</button>
-                                            <button onClick={() => {setLanguage('ar'); safeSetItem('cal_lang', 'ar')}} className={`flex-1 py-2 text-sm font-bold font-arabic transition-colors ${language === 'ar' ? 'bg-primary text-white' : `${theme.inputBg}`}`}>العربية</button>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.hijriAdjustment}</label>
-                                        <select name="hijriOffset" value={hijriOffset} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-medium`}>
-                                            <option value="-1">{tString.offsetMinus1}</option>
-                                            <option value="0">{tString.offset0}</option>
-                                            <option value="1">{tString.offsetPlus1}</option>
-                                        </select>
-                                    </div>
-
-                                    <div className={`p-4 rounded-xl border ${theme.border} bg-fuchsia-500/5`}>
-                                        <h4 className="font-bold mb-2 flex items-center gap-2 text-sm"><IconInfo className="w-4 h-4 text-primary"/> Info Matla'</h4>
-                                        <p className={`text-xs leading-relaxed ${theme.textMuted} text-justify`}>
-                                            {tString.hijriDesc}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    
-    <title>Kalender & Jadwal Harian Premium</title>
-
-    <!-- PWA & Installability Meta Tags -->
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#8c52ff">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Kalender Premium">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#8c52ff',
-                        secondary: '#d099ff',
-                        islamic: {
-                            sunnah: '#10b981',
-                            wajib: '#f59e0b',
-                            haram: '#ef4444'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-arabic { font-family: 'Noto Naskh Arabic', serif; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #d099ff; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #8c52ff; }
-        
-        .text-gradient {
-            background: linear-gradient(to right, #8c52ff, #d099ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .bg-gradient-feminine {
-            background: linear-gradient(135deg, #8c52ff, #d099ff);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-50 overflow-x-hidden">
-    <div id="root"></div>
-
-    <script>
-        // Mendaftarkan Service Worker sederhana agar syarat instalasi PWA terpenuhi
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = "self.addEventListener('install', () => self.skipWaiting()); self.addEventListener('fetch', () => {});";
-                const blob = new Blob([swCode], { type: 'text/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-            });
-        }
-    </script>
-
-    <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
-
-        // --- ICONS ---
-        const IconCalendar = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
-        const IconChevronLeft = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>;
-        const IconChevronRight = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>;
-        const IconPlus = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>;
-        const IconTrash = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>;
-        const IconSun = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>;
-        const IconMoon = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>;
-        const IconClock = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
-        const IconStar = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
-        const IconBookOpen = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>;
-        const IconAward = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>;
-        const IconAlertTriangle = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>;
-        const IconSettings = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>;
-        const IconInfo = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
-        const IconX = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>;
-
-        // --- TRANSLATIONS ---
-        const translations = {
-            id: {
-                greeting: "Assalamu'alaikum",
-                title: "Kalender Premium",
-                subtitle: "Masehi & Hijriah Terintegrasi",
-                today: "Hari Ini",
-                dailyAgenda: "Agenda Harian",
-                addAgenda: "Tambah Agenda",
-                noAgenda: "Tidak ada agenda.",
-                saveAgenda: "Simpan Agenda",
-                settings: "Pengaturan Kalender",
-                personalGreeting: "Sapaan Personal",
-                language: "Bahasa",
-                hijriAdjustment: "Penyesuaian Hijriah (Matla')",
-                hijriDesc: "Matla' adalah batas geografis berlakunya penampakan hilal. Karena posisi bumi, hilal mungkin sudah terlihat di Arab Saudi namun belum terlihat di Indonesia. Pengaturan ini menyesuaikan perbedaan kalender Anda.",
-                offset0: "Sistem Lokal (Pemerintah Indonesia / 0 Hari)",
-                offsetPlus1: "Sistem Global (Pemerintah Arab Saudi / +1 Hari)",
-                offsetMinus1: "Mundur (-1 Hari)",
-                titleLabel: "Judul Agenda...",
-                start: "Mulai",
-                end: "Selesai",
-                descPlaceholder: "Deskripsi ringkas...",
-                exportGoogle: "Google Cal",
-                exportApple: "Apple / ICS",
-                days: ['Ahd', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
-                close: "Tutup",
-                dalilLabel: "Dalil",
-                keutamaanLabel: "Keutamaan"
-            },
-            ar: {
-                greeting: "السلام عليكم",
-                title: "التقويم المميز",
-                subtitle: "الميلادي والهجري مدمجان",
-                today: "اليوم",
-                dailyAgenda: "جدول يومي",
-                addAgenda: "إضافة حدث",
-                noAgenda: "لا توجد أحداث.",
-                saveAgenda: "حفظ الحدث",
-                settings: "إعدادات التقويم",
-                personalGreeting: "تحية شخصية",
-                language: "اللغة",
-                hijriAdjustment: "تعديل التاريخ الهجري (المطلع)",
-                hijriDesc: "المطلع هو النطاق الجغرافي لرؤية الهلال. بسبب كروية الأرض، قد يُرى الهلال في السعودية قبل إندونيسيا. هذا الإعداد يضبط التقويم حسب التوجيهات الحكومية المحلية أو العالمية.",
-                offset0: "النظام المحلي (حكومة إندونيسيا / ٠ يوم)",
-                offsetPlus1: "النظام العالمي (حكومة السعودية / +١ يوم)",
-                offsetMinus1: "تأخير (-١ يوم)",
-                titleLabel: "عنوان الحدث...",
-                start: "بداية",
-                end: "نهاية",
-                descPlaceholder: "وصف موجز...",
-                exportGoogle: "جوجل",
-                exportApple: "آبل",
-                days: ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'],
-                close: "إغلاق",
-                dalilLabel: "الدليل",
-                keutamaanLabel: "الفضل"
-            }
-        };
-
-        const eventDict = {
-            idulFitri: {
-                id: { title: 'Idul Fitri (1 Syawal)', desc: 'Hari Kemenangan - Haram Berpuasa', dalil: 'HR. Bukhari & Muslim: Nabi melarang puasa pada dua hari raya.', keutamaan: 'Hari kebahagiaan, saling memaafkan, dan kembali berbuka setelah sebulan penuh berpuasa.'},
-                ar: { title: 'عيد الفطر (١ شوال)', desc: 'يوم النصر - يحرم فيه الصيام', dalil: 'رواه البخاري ومسلم: نهى النبي عن صيام يومين (يوم الفطر ويوم النحر).', keutamaan: 'يوم فرح وتسامح وإفطار بعد شهر الصيام.'}
-            },
-            idulAdha: {
-                id: { title: 'Idul Adha (10 Zulhijah)', desc: 'Hari Raya Qurban - Haram Berpuasa', dalil: 'HR. Bukhari & Muslim: Nabi melarang puasa pada dua hari raya.', keutamaan: 'Momen pengorbanan menyembelih hewan kurban meneladani Nabi Ibrahim AS.'},
-                ar: { title: 'عيد الأضحى (١٠ ذو الحجة)', desc: 'عيد النحر - يحرم فيه الصيام', dalil: 'رواه البخاري ومسلم: نهى النبي عن صيام يومين.', keutamaan: 'لحظة تضحية وذبح الأضاحي اقتداءً بالنبي إبراهيم عليه السلام.'}
-            },
-            tasyriq: {
-                id: { title: 'Hari Tasyriq', desc: 'Haram Berpuasa', dalil: 'HR. Muslim: "Hari-hari tasyriq adalah hari makan dan minum serta berdzikir kepada Allah."', keutamaan: 'Waktu luang untuk bersyukur, berdzikir, dan menikmati daging kurban.'},
-                ar: { title: 'أيام التشريق', desc: 'يحرم فيها الصيام', dalil: 'رواه مسلم: "أيام التشريق أيام أكل وشرب وذكر لله".', keutamaan: 'وقت للشكر والذكر والاستمتاع بلحوم الأضاحي.'}
-            },
-            ramadan: {
-                id: { title: 'Puasa Ramadan', desc: 'Puasa Wajib Sebulan Penuh', dalil: 'QS. Al-Baqarah: 183 - "Hai orang-orang yang beriman, diwajibkan atas kamu berpuasa..."', keutamaan: 'Penggugur dosa, pahala dilipatgandakan tak terhingga, dan terdapat Lailatul Qadar yang lebih baik dari 1000 bulan.'},
-                ar: { title: 'صيام رمضان', desc: 'صيام شهر كامل واجب', dalil: 'القرآن (البقرة: ١٨٣): "يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ..."', keutamaan: 'مكفر للذنوب، ومضاعف للأجر، وفيه ليلة القدر خير من ألف شهر.'}
-            },
-            tahunBaru: {
-                id: { title: 'Tahun Baru Islam (1 Muharram)', desc: 'Peringatan Hijrah Nabi', dalil: 'Penetapan kalender Hijriah dimulai sejak masa Khalifah Umar bin Khattab merujuk pada momen hijrah.', keutamaan: 'Bulan Muharram adalah salah satu dari 4 bulan haram (mulia) di sisi Allah.' },
-                ar: { title: 'رأس السنة الهجرية (١ محرم)', desc: 'ذكرى الهجرة النبوية', dalil: 'بدأ تحديد التقويم الهجري في عهد الخليفة عمر بن الخطاب بناءً على حدث الهجرة.', keutamaan: 'شهر محرم من الأشهر الحرم العظيمة عند الله.'}
-            },
-            maulid: {
-                id: { title: 'Maulid Nabi Muhammad SAW', desc: 'Peringatan Kelahiran Rasulullah', dalil: 'Sejarah kelahiran Nabi Muhammad SAW di Mekkah pada Tahun Gajah (12 Rabiul Awal).', keutamaan: 'Momen istimewa untuk meneladani akhlak, sirah, dan memperbanyak shalawat kepada Nabi.' },
-                ar: { title: 'المولد النبوي الشريف', desc: 'ذكرى مولد رسول الله', dalil: 'تاريخ ولادة النبي محمد ﷺ في مكة عام الفيل (١٢ ربيع الأول).', keutamaan: 'لحظة خاصة للاقتداء بأخلاقه وسيرته والإكثار من الصلاة عليه.'}
-            },
-            isra: {
-                id: { title: 'Isra Mi\'raj', desc: 'Perjalanan Malam & Mikraj Nabi', dalil: 'QS. Al-Isra: 1 - "Maha Suci Allah yang telah memperjalankan hamba-Nya pada suatu malam..."', keutamaan: 'Momen bersejarah penerimaan syariat shalat fardhu 5 waktu langsung dari Allah SWT.' },
-                ar: { title: 'الإسراء والمعراج', desc: 'رحلة النبي الليلية', dalil: 'القرآن (الإسراء: ١): "سُبْحَانَ الَّذِي أَسْرَىٰ بِعَبْدِهِ لَيْلًا..."', keutamaan: 'حدث تاريخي لتلقي فريضة الصلوات الخمس مباشرة من الله تعالى.'}
-            },
-            puasaSenin: {
-                id: { title: 'Puasa Sunnah Senin', desc: 'Puasa Sunnah Pekanan', dalil: 'HR. Muslim: "Itu adalah hari aku dilahirkan dan hari aku diutus atau diturunkannya wahyu kepadaku."', keutamaan: 'Hari dimana amal perbuatan diangkat dan dihadapkan kepada Allah SWT.'},
-                ar: { title: 'صيام الإثنين', desc: 'سنة أسبوعية', dalil: 'رواه مسلم: "ذَاكَ يَوْمٌ وُلِدْتُ فِيهِ، وَيَوْمٌ بُعِثْتُ..."', keutamaan: 'يوم تُعرض فيه الأعمال على الله.'}
-            },
-            puasaKamis: {
-                id: { title: 'Puasa Sunnah Kamis', desc: 'Puasa Sunnah Pekanan', dalil: 'HR. Tirmidzi: "Amal-amal manusia diperlihatkan (kepada Allah) pada hari Senin dan Kamis..."', keutamaan: 'Pintu-pintu surga dibuka pada hari Senin dan Kamis, saat yang baik untuk berpuasa.'},
-                ar: { title: 'صيام الخميس', desc: 'سنة أسبوعية', dalil: 'رواه الترمذي: "تُعْرَضُ الأَعْمَالُ يَوْمَ الاِثْنَيْنِ وَالْخَمِيسِ..."', keutamaan: 'تُفتح أبواب الجنة يومي الإثنين والخميس.'}
-            },
-            ayyamulBidh: {
-                id: { title: 'Puasa Ayyamul Bidh', desc: 'Puasa Pertengahan Bulan Hijriah', dalil: 'HR. Bukhari: "Kekasihku (Nabi SAW) mewasiatkan kepadaku tiga hal: Puasa tiga hari setiap bulan..."', keutamaan: 'Pahalanya seperti berpuasa sepanjang masa (karena 3 hari x 10 kebaikan = 30 hari).'},
-                ar: { title: 'الأيام البيض', desc: 'صيام منتصف الشهر', dalil: 'رواه البخاري: "أَوْصَانِي خَلِيلِي بِثَلَاثٍ: صِيَامِ ثَلَاثَةِ أَيَّامٍ مِنْ كُلِّ شَهْرٍ..."', keutamaan: 'أجرها كصيام الدهر كله.'}
-            },
-            tasua: {
-                id: { title: 'Puasa Tasu\'a (9 Muharram)', desc: 'Puasa Sehari Sebelum Asyura', dalil: 'HR. Muslim: "Apabila tahun depan (aku masih hidup), insya Allah kita akan berpuasa pada hari kesembilan."', keutamaan: 'Menyelisihi kebiasaan umat Yahudi yang hanya berpuasa di hari ke-10 (Asyura).'},
-                ar: { title: 'تاسوعاء (٩ محرم)', desc: 'صيام قبل عاشوراء', dalil: 'رواه مسلم: "لَئِنْ بَقِيتُ إِلَى قَابِلٍ لأَصُومَنَّ التَّاسِعَ".', keutamaan: 'مخالفة لعادة اليهود بصيام اليوم العاشر فقط.'}
-            },
-            asyura: {
-                id: { title: 'Puasa Asyura (10 Muharram)', desc: 'Puasa Utama di Bulan Allah', dalil: 'HR. Muslim: "Puasa hari Asyura, aku berharap kepada Allah agar Ia menghapuskan dosa setahun yang lalu."', keutamaan: 'Keutamaan agung: Menghapus dosa-dosa kecil selama setahun yang telah lalu.'},
-                ar: { title: 'عاشوراء (١٠ محرم)', desc: 'صيام عظيم في شهر الله', dalil: 'رواه مسلم: "صِيَامُ يَوْمِ عَاشُورَاءَ، أَحْتَسِبُ عَلَى اللَّهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ".', keutamaan: 'يكفر صغائر الذنوب لسنة ماضية.'}
-            },
-            nisfuSyakban: {
-                id: { title: 'Puasa Nisfu Syakban', desc: 'Pertengahan Bulan Syakban', dalil: 'Dianjurkan secara umum memperbanyak puasa di bulan Syakban sebagai pemanasan menjelang Ramadan.', keutamaan: 'Malam Nisfu Syakban diyakini sebagai malam penuh berkah dan pengampunan dosa dari Allah.'},
-                ar: { title: 'النصف من شعبان', desc: 'منتصف شعبان', dalil: 'يُستحب الإكثار من الصيام في شعبان استعداداً لرمضان.', keutamaan: 'ليلة النصف من شعبان ليلة مباركة ومغفرة من الله.'}
-            },
-            arafah: {
-                id: { title: 'Puasa Arafah (9 Zulhijah)', desc: 'Puasa Bagi yang Tidak Wukuf', dalil: 'HR. Muslim: "Puasa Arafah (9 Dzulhijjah) dapat menghapuskan dosa setahun yang lalu dan setahun yang akan datang."', keutamaan: 'Puasa sunnah dengan ganjaran terbesar: Menghapus dosa 2 tahun (tahun lalu dan tahun depan).'},
-                ar: { title: 'يوم عرفة (٩ ذو الحجة)', desc: 'لغير الحاج', dalil: 'رواه مسلم: "صِيَامُ يَوْمِ عَرَفَةَ، أَحْتَسِبُ عَلَى اللَّهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ، وَالسَّنَةَ الَّتِي بَعْدَهُ".', keutamaan: 'صيام بأكبر أجر: يكفر ذنوب سنتين (سنة ماضية وسنة قادمة).'}
-            }
-        };
-
-        // --- UTILS ---
-        const safeGetItem = (key, defaultValue) => {
-            try { const item = localStorage.getItem(key); return item !== null ? JSON.parse(item) : defaultValue; } catch (error) { return defaultValue; }
-        };
-        const safeSetItem = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} };
-
-        // Hijri Converter menggunakan Intl dengan Offset
-        const getHijriDateDetails = (baseDate, offsetDays, lang) => {
-            const date = new Date(baseDate.getTime() + offsetDays * 86400000); // Terapkan Matla' Offset
-            
-            const locale = lang === 'ar' ? 'ar-SA-u-ca-islamic' : 'id-ID-u-ca-islamic';
-            
-            // FormatToParts untuk mengambil string murni tanpa harus regex yang memotong huruf (seperti kasus "Muharram")
-            const partsDay = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric' }).formatToParts(date);
-            const partsMonthStr = new Intl.DateTimeFormat(locale, { month: 'long' }).formatToParts(date);
-            const partsMonthNum = new Intl.DateTimeFormat('en-US-u-ca-islamic', { month: 'numeric' }).formatToParts(date);
-            const partsYear = new Intl.DateTimeFormat('en-US-u-ca-islamic', { year: 'numeric' }).formatToParts(date);
-            
-            const monthStrValue = partsMonthStr.find(p => p.type === 'month').value;
-            
-            return {
-                day: parseInt(partsDay.find(p => p.type === 'day').value),
-                monthStr: monthStrValue,
-                monthNum: parseInt(partsMonthNum.find(p => p.type === 'month').value),
-                year: partsYear.find(p => p.type === 'year').value
-            };
-        };
-
-        const getIslamicEvents = (date, hijri, lang) => {
-            const events = [];
-            const dayOfWeek = date.getDay(); 
-            const hDay = hijri.day;
-            const hMonth = hijri.monthNum;
-
-            const isIdulFitri = (hDay === 1 && hMonth === 10);
-            const isIdulAdha = (hDay === 10 && hMonth === 12);
-            const isTasyriq = ((hDay === 11 || hDay === 12 || hDay === 13) && hMonth === 12);
-
-            if (isIdulFitri) events.push({ type: 'hari_besar', ...eventDict.idulFitri[lang] });
-            if (isIdulAdha) events.push({ type: 'hari_besar', ...eventDict.idulAdha[lang] });
-            if (isTasyriq) events.push({ type: 'hari_besar', ...eventDict.tasyriq[lang] });
-
-            if (hMonth === 9) events.push({ type: 'puasa_wajib', ...eventDict.ramadan[lang] });
-
-            if (hDay === 1 && hMonth === 1) events.push({ type: 'hari_besar', ...eventDict.tahunBaru[lang] });
-            if (hDay === 12 && hMonth === 3) events.push({ type: 'hari_besar', ...eventDict.maulid[lang] });
-            if (hDay === 27 && hMonth === 7) events.push({ type: 'hari_besar', ...eventDict.isra[lang] });
-
-            if (!isIdulFitri && !isIdulAdha && !isTasyriq && hMonth !== 9) {
-                if (dayOfWeek === 1) events.push({ type: 'puasa_sunnah', ...eventDict.puasaSenin[lang] });
-                else if (dayOfWeek === 4) events.push({ type: 'puasa_sunnah', ...eventDict.puasaKamis[lang] });
-
-                if (hDay === 13 || hDay === 14 || hDay === 15) events.push({ type: 'puasa_sunnah', ...eventDict.ayyamulBidh[lang] });
-
-                if (hDay === 9 && hMonth === 1) events.push({ type: 'puasa_sunnah', ...eventDict.tasua[lang] });
-                if (hDay === 10 && hMonth === 1) events.push({ type: 'puasa_sunnah', ...eventDict.asyura[lang] });
-                if (hDay === 15 && hMonth === 8) events.push({ type: 'puasa_sunnah', ...eventDict.nisfuSyakban[lang] });
-                if (hDay === 9 && hMonth === 12) events.push({ type: 'puasa_sunnah', ...eventDict.arafah[lang] });
-            }
-
-            return events;
-        };
-
-        const generateCalendarGrid = (year, month, offset, lang) => {
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const daysInPrevMonth = new Date(year, month, 0).getDate();
-            
-            let grid = [];
-            
-            for (let i = 0; i < firstDay; i++) {
-                const day = daysInPrevMonth - firstDay + i + 1;
-                const date = new Date(year, month - 1, day);
-                const hijri = getHijriDateDetails(date, offset, lang);
-                const islamicEvents = getIslamicEvents(date, hijri, lang);
-                grid.push({ date, day, isCurrentMonth: false, hijri, islamicEvents });
-            }
-            
-            for (let i = 1; i <= daysInMonth; i++) {
-                const date = new Date(year, month, i);
-                const hijri = getHijriDateDetails(date, offset, lang);
-                const islamicEvents = getIslamicEvents(date, hijri, lang);
-                grid.push({ date, day: i, isCurrentMonth: true, hijri, islamicEvents });
-            }
-            
-            const remaining = 42 - grid.length;
-            for (let i = 1; i <= remaining; i++) {
-                const date = new Date(year, month + 1, i);
-                const hijri = getHijriDateDetails(date, offset, lang);
-                const islamicEvents = getIslamicEvents(date, hijri, lang);
-                grid.push({ date, day: i, isCurrentMonth: false, hijri, islamicEvents });
-            }
-            
-            return grid;
-        };
-
-        const formatDateKey = (date) => `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-        const formatExportDate = (dateStr, timeStr) => new Date(`${dateStr}T${timeStr}:00`).toISOString().replace(/-|:|\.\d\d\d/g, "");
-
-        const formatNumber = (str, lang) => {
-            if (lang !== 'ar') return str;
-            return String(str).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
-        };
-
-        const App = () => {
-            const [isDayTime, setIsDayTime] = useState(() => safeGetItem('cal_theme', true));
-            const [language, setLanguage] = useState(() => safeGetItem('cal_lang', 'id'));
-            const [hijriOffset, setHijriOffset] = useState(() => safeGetItem('cal_hijri_offset', 0));
-            const [userName, setUserName] = useState(() => safeGetItem('cal_user_name', 'Fulan'));
-            const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-
-            const [currentDate, setCurrentDate] = useState(new Date());
-            const [selectedDate, setSelectedDate] = useState(new Date());
-            const [events, setEvents] = useState(() => safeGetItem('cal_events', {}));
-            const [isFormOpen, setIsFormOpen] = useState(false);
-            const [newEvent, setNewEvent] = useState({ title: '', start: '08:00', end: '09:00', desc: '' });
-
-            const theme = {
-                bg: isDayTime ? 'bg-fuchsia-50/50' : 'bg-[#1a1128]',
-                text: isDayTime ? 'text-slate-800' : 'text-fuchsia-50',
-                textMuted: isDayTime ? 'text-slate-500' : 'text-fuchsia-300/70',
-                panel: isDayTime ? 'bg-white/80 border-fuchsia-200 shadow-[0_8px_30px_rgb(140,82,255,0.06)]' : 'bg-[#2d1b4e]/60 border-[#8c52ff]/20 shadow-[0_8px_30px_rgb(0,0,0,0.5)]',
-                inputBg: isDayTime ? 'bg-fuchsia-50 border-fuchsia-200 focus:border-primary text-slate-800' : 'bg-[#1a1128]/80 border-[#8c52ff]/30 focus:border-secondary text-white',
-                card: isDayTime ? 'bg-white border-fuchsia-100' : 'bg-[#2d1b4e]/40 border-[#8c52ff]/20',
-                hoverCard: isDayTime ? 'hover:bg-fuchsia-50' : 'hover:bg-[#2d1b4e]/80',
-                border: isDayTime ? 'border-fuchsia-200' : 'border-[#8c52ff]/30',
-            };
-
-            const tString = translations[language];
-
-            const toggleTheme = () => {
-                const newTheme = !isDayTime;
-                setIsDayTime(newTheme);
-                safeSetItem('cal_theme', newTheme);
-            };
-
-            const toggleLanguage = () => {
-                const newLang = language === 'id' ? 'ar' : 'id';
-                setLanguage(newLang);
-                safeSetItem('cal_lang', newLang);
-            };
-
-            const handleSaveSettings = (e) => {
-                const target = e.target;
-                if (target.name === 'userName') {
-                    setUserName(target.value);
-                    safeSetItem('cal_user_name', target.value);
-                } else if (target.name === 'hijriOffset') {
-                    const val = parseInt(target.value);
-                    setHijriOffset(val);
-                    safeSetItem('cal_hijri_offset', val);
-                }
-            };
-
-            const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-            const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-            const goToday = () => {
-                const today = new Date();
-                setCurrentDate(today);
-                setSelectedDate(today);
-            };
-
-            const handleAddEvent = (e) => {
-                e.preventDefault();
-                if (!newEvent.title.trim()) return;
-
-                const dateKey = formatDateKey(selectedDate);
-                const dayEvents = events[dateKey] || [];
-                const updatedEvents = { ...events, [dateKey]: [...dayEvents, { id: Date.now().toString(), ...newEvent }] };
-                
-                updatedEvents[dateKey].sort((a, b) => a.start.localeCompare(b.start));
-
-                setEvents(updatedEvents);
-                safeSetItem('cal_events', updatedEvents);
-                setNewEvent({ title: '', start: '08:00', end: '09:00', desc: '' });
-                setIsFormOpen(false);
-            };
-
-            const handleDeleteEvent = (dateKey, eventId) => {
-                const dayEvents = events[dateKey].filter(e => e.id !== eventId);
-                const updatedEvents = { ...events, [dateKey]: dayEvents };
-                if (dayEvents.length === 0) delete updatedEvents[dateKey];
-                
-                setEvents(updatedEvents);
-                safeSetItem('cal_events', updatedEvents);
-            };
-
-            const exportToGoogle = (event, isFullDay = false) => {
-                const dateKey = formatDateKey(selectedDate);
-                const startStr = formatExportDate(dateKey, event.start || "00:00");
-                const endStr = formatExportDate(dateKey, event.end || "23:59");
-                
-                let url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startStr}/${endStr}&details=${encodeURIComponent(event.desc || '')}`;
-                if(event.dalil) url += encodeURIComponent(`\n\n${tString.dalilLabel}: ${event.dalil}\n${tString.keutamaanLabel}: ${event.keutamaan}`);
-                window.open(url, '_blank');
-            };
-
-            const exportToApple = (event, isFullDay = false) => {
-                const dateKey = formatDateKey(selectedDate);
-                const startStr = formatExportDate(dateKey, event.start || "00:00");
-                const endStr = formatExportDate(dateKey, event.end || "23:59");
-                
-                let desc = event.desc ? event.desc.replace(/\n/g, '\\n') : '';
-                if(event.dalil) desc += `\\n\\n${tString.dalilLabel}: ${event.dalil}\\n${tString.keutamaanLabel}: ${event.keutamaan}`;
-
-                const icsContent = [
-                    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Jadwal Premium//ID", "BEGIN:VEVENT",
-                    `UID:${event.id || Date.now()}@jadwalpremium`, `DTSTAMP:${startStr}`, `DTSTART:${startStr}`, `DTEND:${endStr}`,
-                    `SUMMARY:${event.title}`, `DESCRIPTION:${desc}`, "END:VEVENT", "END:VCALENDAR"
-                ].join("\n");
-
-                const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `${event.title.replace(/\s+/g, '_')}.ics`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            };
-
-            const grid = useMemo(() => generateCalendarGrid(currentDate.getFullYear(), currentDate.getMonth(), hijriOffset, language), [currentDate, hijriOffset, language]);
-            const selectedDateKey = formatDateKey(selectedDate);
-            const currentDayEvents = events[selectedDateKey] || [];
-            
-            const selectedHijriInfo = getHijriDateDetails(selectedDate, hijriOffset, language);
-            const selectedIslamicEvents = getIslamicEvents(selectedDate, selectedHijriInfo, language);
-            const currentHijriInfo = getHijriDateDetails(currentDate, hijriOffset, language);
-
-            const getEventColor = (type) => type === 'hari_besar' ? 'bg-rose-50 border-rose-300 text-rose-800' : type === 'puasa_sunnah' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : type === 'puasa_wajib' ? 'bg-amber-50 border-amber-300 text-amber-800' : theme.card;
-            const getDarkEventColor = (type) => type === 'hari_besar' ? 'bg-rose-900/30 border-rose-500/50 text-rose-200' : type === 'puasa_sunnah' ? 'bg-emerald-900/30 border-emerald-500/50 text-emerald-200' : type === 'puasa_wajib' ? 'bg-amber-900/30 border-amber-500/50 text-amber-200' : theme.card;
-            const getRibbonColor = (type) => type === 'hari_besar' ? 'bg-rose-500' : type === 'puasa_sunnah' ? 'bg-emerald-500' : type === 'puasa_wajib' ? 'bg-amber-500' : 'bg-gradient-feminine';
-            const getIconForType = (type) => type === 'hari_besar' ? <IconAlertTriangle className="w-5 h-5 text-rose-500" /> : type === 'puasa_wajib' ? <IconStar className="w-5 h-5 text-amber-500" /> : <IconMoon className="w-5 h-5 text-emerald-500" />;
-
-            return (
-                <div dir={language === 'ar' ? 'rtl' : 'ltr'} className={`min-h-screen transition-colors duration-1000 ${theme.bg} ${theme.text} ${language === 'ar' ? 'font-arabic' : 'font-sans'} pb-20 overflow-x-hidden`}>
-                    
-                    <div className="relative pt-8 md:pt-12 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                        
-                        {/* TOP BUTTONS */}
-                        <div className={`absolute top-4 ${language === 'ar' ? 'left-4 md:left-8' : 'right-4 md:right-8'} z-20 flex gap-2`}>
-                            <button onClick={() => setIsSettingsOpen(true)} className={`p-3 rounded-full backdrop-blur-md transition-all shadow-lg hover:scale-105 ${isDayTime ? 'bg-white/90 text-primary hover:bg-fuchsia-100' : 'bg-[#2d1b4e]/80 text-secondary hover:bg-[#2d1b4e]'}`}>
-                                <IconSettings className="w-5 h-5" />
-                            </button>
-                            <button onClick={toggleTheme} className={`p-3 rounded-full backdrop-blur-md transition-all shadow-lg hover:scale-105 ${isDayTime ? 'bg-white/90 text-primary hover:bg-fuchsia-100' : 'bg-[#2d1b4e]/80 text-secondary hover:bg-[#2d1b4e]'}`}>
-                                {isDayTime ? <IconMoon className="w-5 h-5" /> : <IconSun className="w-5 h-5" />}
-                            </button>
-                        </div>
-
-                        <div className="text-center mb-8 md:mb-10 mt-6 md:mt-0">
-                            {userName && (
-                                <p className={`font-semibold mb-1 text-sm md:text-base ${isDayTime ? 'text-primary' : 'text-secondary'}`}>
-                                    {tString.greeting}, {userName} ✨
-                                </p>
-                            )}
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gradient mb-3">
-                                {tString.title}
-                            </h1>
-                            <p className={`font-semibold text-sm md:text-base ${theme.textMuted}`}>
-                                {tString.subtitle}
-                            </p>
-                        </div>
-
-                        <div className="grid lg:grid-cols-3 gap-6 md:gap-8">
-                            
-                            {/* LEFT PANEL: CALENDAR */}
-                            <div className={`lg:col-span-2 ${theme.panel} backdrop-blur-md rounded-3xl p-5 md:p-8 border relative overflow-hidden`}>
-                                <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
-                                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
-
-                                <div className="relative z-10">
-                                    <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-                                        <div className="text-center sm:text-start">
-                                            <h2 className="text-2xl md:text-3xl font-bold font-mono tracking-tight text-gradient" dir="ltr">
-                                                {currentDate.toLocaleString(language === 'ar' ? 'ar-SA' : 'id-ID', { month: 'long' })} {formatNumber(currentDate.getFullYear(), language)} {language === 'ar' ? 'م' : 'M'}
-                                            </h2>
-                                            <p className={`text-sm md:text-base font-medium mt-1 ${theme.textMuted}`}>
-                                                {currentHijriInfo.monthStr} {formatNumber(currentHijriInfo.year, language)} {language === 'ar' ? 'هـ' : 'H'}
-                                            </p>
-                                        </div>
-                                        <div className={`flex items-center gap-3 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                            <button onClick={prevMonth} className={`p-2 rounded-full ${theme.card} ${theme.hoverCard} border transition-all hover:scale-105`}>
-                                                <IconChevronLeft className="w-5 h-5" />
-                                            </button>
-                                            <button onClick={goToday} className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-feminine text-white shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5">
-                                                {tString.today}
-                                            </button>
-                                            <button onClick={nextMonth} className={`p-2 rounded-full ${theme.card} ${theme.hoverCard} border transition-all hover:scale-105`}>
-                                                <IconChevronRight className="w-5 h-5" />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-7 gap-2 mb-2 text-center">
-                                        {tString.days.map((day, idx) => (
-                                            <div key={day} className={`text-xs md:text-sm font-bold uppercase ${idx === 0 || idx === 6 ? 'text-rose-400' : theme.textMuted}`}>
-                                                {day}
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <div className="grid grid-cols-7 gap-2 md:gap-3">
-                                        {grid.map((item, idx) => {
-                                            const isSelected = formatDateKey(item.date) === selectedDateKey;
-                                            const isToday = formatDateKey(item.date) === formatDateKey(new Date());
-                                            const hasUserEvent = events[formatDateKey(item.date)]?.length > 0;
-                                            const hasIslamicEvent = item.islamicEvents.length > 0;
-                                            
-                                            return (
-                                                <div 
-                                                    key={idx} onClick={() => setSelectedDate(item.date)}
-                                                    className={`
-                                                        relative cursor-pointer rounded-xl md:rounded-2xl p-2 md:p-3 min-h-[60px] md:min-h-[85px] flex flex-col justify-between border transition-all duration-300 transform 
-                                                        ${!item.isCurrentMonth ? 'opacity-40 grayscale' : ''}
-                                                        ${isSelected ? 'bg-gradient-feminine text-white shadow-[0_10px_20px_rgb(140,82,255,0.3)] scale-105 z-10 border-transparent' : `${theme.card} ${theme.hoverCard} ${theme.border} hover:-translate-y-1`}
-                                                    `}
-                                                >
-                                                    <div className="flex justify-between items-start w-full" dir="ltr">
-                                                        <span className={`text-[10px] md:text-xs font-bold opacity-80 ${isSelected ? 'text-fuchsia-100' : 'text-primary'}`}>
-                                                            {formatNumber(item.hijri.day, language)}
-                                                        </span>
-                                                        <span className={`text-sm md:text-lg font-bold font-mono ${isSelected ? 'text-white' : (isToday ? 'text-primary' : theme.text)}`}>
-                                                            {formatNumber(item.day, language)}
-                                                        </span>
-                                                    </div>
-                                                    
-                                                    <div className="mt-auto pt-1 w-full flex flex-wrap justify-center gap-1">
-                                                        {hasIslamicEvent && item.islamicEvents.map((ev, i) => (
-                                                            <div key={i} title={ev.title} className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${ev.type === 'hari_besar' ? 'bg-rose-500' : (ev.type === 'puasa_wajib' ? 'bg-amber-400' : 'bg-emerald-400')}`}></div>
-                                                        ))}
-                                                        {hasUserEvent && (
-                                                            <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${isSelected ? 'bg-white' : 'bg-primary'} animate-pulse`}></div>
+                                                            <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${isSelected ? 'bg-white' : 'bg-primary'} animate-pulse`}></div>
                                                         )}
                                                     </div>
                                                 </div>
