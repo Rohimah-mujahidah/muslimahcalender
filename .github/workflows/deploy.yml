@@ -1,0 +1,47 @@
+name: Deploy Kalender Premium to GitHub Pages
+
+on:
+  # Akan berjalan otomatis setiap ada push ke branch main
+  push:
+    branches: ["main"]
+  # Memungkinkan untuk dijalankan secara manual dari tab Actions
+  workflow_dispatch:
+
+# Menetapkan izin yang diperlukan untuk deploy ke GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    
+    # Memaksa GitHub Actions menggunakan Node 24 untuk menghilangkan peringatan Deprecated Node 20
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      
+    steps:
+      - name: Checkout repository
+        # Menggunakan versi terbaru yang ada, Node 24 dipaksa dari env di atas
+        uses: actions/checkout@v4 
+        
+      - name: Setup Pages
+        # Menerapkan v5 sesuai pembaruan terbaru GitHub Actions
+        uses: actions/configure-pages@v5
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
