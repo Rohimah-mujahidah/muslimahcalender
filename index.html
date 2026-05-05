@@ -31,6 +31,16 @@
                             sunnah: '#10b981',
                             wajib: '#f59e0b',
                             haram: '#ef4444'
+                        },
+                        health: {
+                            haid: '#f43f5e',
+                            suci: '#0ea5e9',
+                            preg: '#db2777'
+                        },
+                        quran: '#6366f1',
+                        routine: {
+                            kajian: '#f97316',
+                            kuliah: '#14b8a6' 
                         }
                     }
                 }
@@ -56,19 +66,25 @@
         .bg-gradient-feminine {
             background: linear-gradient(135deg, #8c52ff, #d099ff);
         }
+        .bg-gradient-quran {
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+        }
         
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+        /* Menyembunyikan default panah details di browser */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-50 overflow-x-hidden">
     <div id="root"></div>
 
     <script>
-        // Mendaftarkan Service Worker sederhana agar syarat instalasi PWA terpenuhi
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const swCode = "self.addEventListener('install', () => self.skipWaiting()); self.addEventListener('fetch', () => {});";
@@ -97,6 +113,15 @@
         const IconSettings = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>;
         const IconInfo = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
         const IconX = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>;
+        const IconHeart = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>;
+        const IconBaby = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="6" r="3"/><path d="M14.5 12h-5a2 2 0 0 0-2 2v7"/><path d="M16.5 21v-7a2 2 0 0 0-2-2"/><path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/></svg>;
+        const IconCheckCircle = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>;
+        const IconBriefcase = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>;
+        const IconMic = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>;
+        const IconEdit = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>;
+        const IconLink = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>;
+        const IconClipboard = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>;
+        const IconShield = ({className}) => <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
 
         // --- TRANSLATIONS ---
         const translations = {
@@ -126,7 +151,74 @@
                 days: ['Ahd', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
                 close: "Tutup",
                 dalilLabel: "Dalil",
-                keutamaanLabel: "Keutamaan"
+                keutamaanLabel: "Keutamaan",
+                
+                healthSettings: "Fitur Fikih Kewanitaan",
+                healthToggle: "Aktifkan Kalkulator Haid & Kehamilan",
+                hphtLabel: "HPHT (Hari Pertama Haid Terakhir)",
+                cycleLabel: "Siklus Bulanan (Hari)",
+                durationLabel: "Lama Haid / 'Addah (Hari)",
+                pregnantLabel: "Sedang Hamil? (Hitung HPL & Janin)",
+                haidTitle: "Prediksi Masa Haid (Hari ke-",
+                haidDesc: "Berdasarkan kebiasaan 'addah. Fikih Syafii: Haram melaksanakan shalat, puasa, thawaf, dan menyentuh mushaf.",
+                haidDalil: 'QS. Al-Baqarah: 222 - "Mereka bertanya kepadamu tentang haidh. Katakanlah: Haidh itu adalah suatu kotoran. Oleh sebab itu hendaklah kamu menjauhkan diri dari wanita di waktu haidh..."',
+                haidKeutamaan: 'Tetap mendapat pahala niat ibadah walau sedang libur, perbanyak dzikir, doa, dan bershalawat.',
+                suciTitle: "Awal Masa Suci (Mandi Wajib)",
+                suciDesc: "Waktunya bersuci (mandi janabah). Anda diwajibkan kembali mendirikan shalat dan puasa.",
+                suciDalil: 'QS. Al-Baqarah: 222 - "...Apabila mereka telah suci, maka campurilah mereka itu di tempat yang diperintahkan Allah kepadamu."',
+                suciKeutamaan: 'Kesucian adalah separuh dari keimanan. Segeralah bersuci untuk bermunajat kepada-Nya tanpa menunda.',
+                hplTitle: "Hari Perkiraan Lahir (HPL)",
+                hplDesc: "Berdasarkan hitungan medis (Rumus Naegele), ini adalah hari perkiraan persalinan Anda.",
+                hplDalil: 'QS. Luqman: 14 - "Ibunya telah mengandungnya dalam keadaan lemah yang bertambah-tambah, dan menyapihnya dalam dua tahun..."',
+                hplKeutamaan: "Proses melahirkan adalah pengorbanan besar bernilai jihad. Perbanyak doa nabi Yunus dan doa Maryam untuk kelancaran.",
+                pregWeekTitle: "Perkembangan Janin (Minggu ke-",
+                pregWeekDesc: "Alhamdulillah, kehamilan Anda bertambah satu minggu. Terus jaga asupan nutrisi dan emosi positif.",
+
+                quranSettings: "Program Al-Qur'an",
+                quranToggle: "Aktifkan Program Tilawah / Tahfizh",
+                quranMode: "Mode Program",
+                modeTilawah: "Tilawah",
+                modeTahfizh: "Tahfizh (Hafalan 604 Hal.)",
+                quranTarget: "Target Khatam",
+                target6: "6 Hari (5 Juz / Hari)",
+                target7: "7 Hari (Manzil)",
+                target10: "10 Hari (3 Juz / Hari)",
+                target30: "30 Hari (1 Juz / Hari)",
+                target60: "60 Hari (1 Hizb / Hari)",
+                targetHalfPage: "1/2 Halaman (Atas/Bawah)",
+                target1Page: "1 Halaman / Hari",
+                target2Pages: "2 Halaman / Hari",
+                target3Pages: "3 Halaman / Hari",
+                startDate: "Tanggal Mulai",
+                quranDashboard: "Dasbor Capaian Al-Qur'an",
+                progressText: "Progres Khatam",
+                completed: "Selesai",
+                remaining: "Sisa",
+                estKhatam: "Perkiraan Khatam",
+                markDone: "Tandai Selesai",
+                unmarkDone: "Batalkan",
+                missed: "Tertunda",
+                todayTask: "Tugas",
+                haidRestMsg: "Masa Haidh - Istirahat",
+                haidRestDesc: "Haram menyentuh dan membaca mushaf (kecuali niat dzikir/murajaah dlm bbrp pendapat). Target Anda ditunda & dilanjutkan otomatis saat masa suci.",
+
+                routineDashboard: "Dashboard Rutinitas",
+                kajianTab: "Kajian",
+                kuliahTab: "Perkuliahan",
+                speaker: "Pemateri / Dosen",
+                topic: "Materi / Topik",
+                recurrence: "Pengulangan",
+                weekly: "Pekanan",
+                monthly: "Bulanan",
+                none: "Sekali",
+                dayOfWeek: "Hari",
+                dateOfMonth: "Tanggal",
+                subject: "Mata Kuliah / Pelajaran",
+                task: "Tugas",
+                link: "Tautan",
+                editSession: "Edit Sesi",
+                save: "Simpan",
+                addRoutine: "Tambah Rutinitas"
             },
             ar: {
                 greeting: "السلام عليكم",
@@ -154,105 +246,183 @@
                 days: ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'],
                 close: "إغلاق",
                 dalilLabel: "الدليل",
-                keutamaanLabel: "الفضل"
+                keutamaanLabel: "الفضل",
+
+                healthSettings: "فقه النساء",
+                healthToggle: "تفعيل حاسبة الحيض والحمل",
+                hphtLabel: "أول يوم من آخر دورة شهرية",
+                cycleLabel: "طول الدورة (أيام)",
+                durationLabel: "مدة الحيض / العادة (أيام)",
+                pregnantLabel: "هل أنتِ حامل؟ (حساب موعد الولادة)",
+                haidTitle: "فترة الحيض المتوقعة (اليوم ",
+                haidDesc: "بناءً على العادة. الفقه الشافعي: يمنع الصلاة والصوم والطواف ومس المصحف.",
+                haidDalil: "ويسألونك عن المحيض قل هو أذى فاعتزلوا النساء في المحيض...",
+                haidKeutamaan: "لك الأجر بالنية، يستحب الإكثار من الذكر والدعاء.",
+                suciTitle: "بداية فترة الطهر (الغسل الواجب)",
+                suciDesc: "يجب الاغتسال واستئناف الصلاة والصيام.",
+                suciDalil: "فإذا تطهرن فأتوهن من حيث أمركم الله...",
+                suciKeutamaan: "الطهور شطر الإيمان. بادري بالغسل للعودة للعبادة.",
+                hplTitle: "يوم الولادة المتوقع (HPL)",
+                hplDesc: "حسب الحسابات الطبية، هذا هو اليوم المتوقع للولادة.",
+                hplDalil: "حملته أمه وهنا على وهن...",
+                hplKeutamaan: "الإكثار من الدعاء لتسهيل الولادة وسلامة الأم والجنين.",
+                pregWeekTitle: "تطور الجنين (الأسبوع ",
+                pregWeekDesc: "الحمد لله، دخلتِ أسبوعاً جديداً من الحمل. حافظي على تغذيتك.",
+
+                quranSettings: "برنامج القرآن الكريم",
+                quranToggle: "تفعيل برنامج التلاوة / التحفيظ",
+                quranMode: "وضع البرنامج",
+                modeTilawah: "تلاوة",
+                modeTahfizh: "تحفيظ (٦٠٤ صفحات)",
+                quranTarget: "هدف الختم",
+                target6: "٦ أيام",
+                target7: "٧ أيام",
+                target10: "١٠ أيام",
+                target30: "٣٠ يوماً",
+                target60: "٦٠ يوماً",
+                targetHalfPage: "نصف صفحة (أعلى/أسفل)",
+                target1Page: "صفحة واحدة / يوم",
+                target2Pages: "صفحتان / يوم",
+                target3Pages: "٣ صفحات / يوم",
+                startDate: "تاريخ البدء",
+                quranDashboard: "لوحة إنجاز القرآن الكريم",
+                progressText: "تقدم الختم",
+                completed: "مكتمل",
+                remaining: "متبقي",
+                estKhatam: "الموعد المتوقع للختم",
+                markDone: "تحديد كمنجز",
+                unmarkDone: "إلغاء",
+                missed: "متأخر",
+                todayTask: "مهمة",
+                haidRestMsg: "فترة الحيض - استراحة",
+                haidRestDesc: "يحرم مس المصحف. سيتم تأجيل هدفك واستئنافه تلقائياً عند الطهر.",
+
+                routineDashboard: "لوحة الروتين",
+                kajianTab: "المحاضرات",
+                kuliahTab: "الجامعة / المدرسة",
+                speaker: "المحاضر",
+                topic: "الموضوع",
+                recurrence: "التكرار",
+                weekly: "أسبوعي",
+                monthly: "شهري",
+                none: "مرة واحدة",
+                dayOfWeek: "اليوم",
+                dateOfMonth: "التاريخ",
+                subject: "المادة",
+                task: "الواجب",
+                link: "الرابط",
+                editSession: "تعديل الجلسة",
+                save: "حفظ",
+                addRoutine: "إضافة روتين"
             }
         };
 
         const eventDict = {
-            idulFitri: {
-                id: { title: 'Idul Fitri (1 Syawal)', desc: 'Hari Kemenangan - Haram Berpuasa', dalil: 'HR. Bukhari & Muslim: Nabi melarang puasa pada dua hari raya.', keutamaan: 'Hari kebahagiaan, saling memaafkan, dan kembali berbuka setelah sebulan penuh berpuasa.'},
-                ar: { title: 'عيد الفطر (١ شوال)', desc: 'يوم النصر - يحرم فيه الصيام', dalil: 'رواه البخاري ومسلم: نهى النبي عن صيام يومين (يوم الفطر ويوم النحر).', keutamaan: 'يوم فرح وتسامح وإفطار بعد شهر الصيام.'}
+            idulFitri: { 
+                id: { title: 'Idul Fitri (1 Syawal)', desc: 'Hari Kemenangan - Haram Berpuasa', dalil: 'HR. Bukhari no. 1990 & Muslim no. 1137: Dari Abu Sa’id Al Khudri ra., ia berkata: “Nabi shallallahu ‘alaihi wa sallam melarang berpuasa pada dua hari: Idul Fitri dan Idul Adha.”', keutamaan: 'Hari raya kemenangan sesudah sebulan penuh menahan hawa nafsu. Disunnahkan memperbanyak takbir, memakai pakaian terbaik, dan saling memaafkan.'}, 
+                ar: { title: 'عيد الفطر (١ شوال)', desc: 'يوم النصر - يحرم فيه الصيام', dalil: 'رواه البخاري (١٩٩٠) ومسلم (١١٣٧): نهى النبي عن صيام يومين: يوم الفطر ويوم النحر.', keutamaan: 'يوم الجائزة بعد إتمام صيام رمضان. يسن فيه التكبير، والتجمل، وإظهار الفرح.'} 
             },
-            idulAdha: {
-                id: { title: 'Idul Adha (10 Zulhijah)', desc: 'Hari Raya Qurban - Haram Berpuasa', dalil: 'HR. Bukhari & Muslim: Nabi melarang puasa pada dua hari raya.', keutamaan: 'Momen pengorbanan menyembelih hewan kurban meneladani Nabi Ibrahim AS.'},
-                ar: { title: 'عيد الأضحى (١٠ ذو الحجة)', desc: 'عيد النحر - يحرم فيه الصيام', dalil: 'رواه البخاري ومسلم: نهى النبي عن صيام يومين.', keutamaan: 'لحظة تضحية وذبح الأضاحي اقتداءً بالنبي إبراهيم عليه السلام.'}
+            idulAdha: { 
+                id: { title: 'Idul Adha (10 Zulhijah)', desc: 'Hari Raya Qurban - Haram Berpuasa', dalil: 'HR. Bukhari & Muslim: Larangan tegas Rasulullah untuk berpuasa di hari raya Idul Adha (Hari An-Nahr).', keutamaan: 'Momen pengorbanan menyembelih hewan kurban meneladani ketakwaan Nabi Ibrahim AS dan Ismail AS.'}, 
+                ar: { title: 'عيد الأضحى (١٠ ذو الحجة)', desc: 'عيد النحر - يحرم فيه الصيام', dalil: 'رواه البخاري ومسلم: تحريم صيام يوم النحر.', keutamaan: 'يوم الحج الأكبر وذبح الأضاحي اقتداءً بخليل الرحمن إبراهيم عليه السلام.'} 
             },
-            tasyriq: {
-                id: { title: 'Hari Tasyriq', desc: 'Haram Berpuasa', dalil: 'HR. Muslim: "Hari-hari tasyriq adalah hari makan dan minum serta berdzikir kepada Allah."', keutamaan: 'Waktu luang untuk bersyukur, berdzikir, dan menikmati daging kurban.'},
-                ar: { title: 'أيام التشريق', desc: 'يحرم فيها الصيام', dalil: 'رواه مسلم: "أيام التشريق أيام أكل وشرب وذكر لله".', keutamaan: 'وقت للشكر والذكر والاستمتاع بلحوم الأضاحي.'}
+            tasyriq: { 
+                id: { title: 'Hari Tasyriq (11-13 Zulhijah)', desc: 'Hari Makan & Minum - Haram Berpuasa', dalil: 'HR. Muslim no. 1141: “Hari-hari tasyriq adalah hari makan dan minum serta berdzikir kepada Allah Azza wa Jalla.”', keutamaan: 'Waktu luang bagi umat Islam untuk bersyukur, memperbanyak dzikir (takbir mutlak/muqayyad), dan menikmati nikmat daging kurban.'}, 
+                ar: { title: 'أيام التشريق', desc: 'أيام أكل وشرب - يحرم فيها الصيام', dalil: 'رواه مسلم: "أيام التشريق أيام أكل وشرب وذكر لله".', keutamaan: 'أيام شكر وفرح وذكر لله تعالى عقب مناسك الحج.'} 
             },
-            ramadan: {
-                id: { title: 'Puasa Ramadan', desc: 'Puasa Wajib Sebulan Penuh', dalil: 'QS. Al-Baqarah: 183 - "Hai orang-orang yang beriman, diwajibkan atas kamu berpuasa..."', keutamaan: 'Penggugur dosa, pahala dilipatgandakan tak terhingga, dan terdapat Lailatul Qadar yang lebih baik dari 1000 bulan.'},
-                ar: { title: 'صيام رمضان', desc: 'صيام شهر كامل واجب', dalil: 'القرآن (البقرة: ١٨٣): "يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ..."', keutamaan: 'مكفر للذنوب، ومضاعف للأجر، وفيه ليلة القدر خير من ألف شهر.'}
+            ramadan: { 
+                id: { title: 'Puasa Ramadan', desc: 'Puasa Wajib Sebulan Penuh', dalil: 'QS. Al-Baqarah: 183 - "Hai orang-orang yang beriman, diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang-orang sebelum kamu agar kamu bertakwa."', keutamaan: 'Ibadah utama penggugur dosa. Pahalanya dilipatgandakan tak terhingga langsung oleh Allah, dan pintu-pintu surga dibuka selebar-lebarnya.'}, 
+                ar: { title: 'صيام رمضان', desc: 'صيام شهر كامل واجب', dalil: 'القرآن (البقرة: ١٨٣): "يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ كَمَا كُتِبَ عَلَى الَّذِينَ مِن قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ".', keutamaan: 'مكفر للذنوب، تفتح فيه أبواب الجنة وتغلق أبواب النار وتصفد الشياطين.'} 
             },
-            tahunBaru: {
-                id: { title: 'Tahun Baru Islam (1 Muharram)', desc: 'Peringatan Hijrah Nabi', dalil: 'Penetapan kalender Hijriah dimulai sejak masa Khalifah Umar bin Khattab merujuk pada momen hijrah.', keutamaan: 'Bulan Muharram adalah salah satu dari 4 bulan haram (mulia) di sisi Allah.' },
-                ar: { title: 'رأس السنة الهجرية (١ محرم)', desc: 'ذكرى الهجرة النبوية', dalil: 'بدأ تحديد التقويم الهجري في عهد الخليفة عمر بن الخطاب بناءً على حدث الهجرة.', keutamaan: 'شهر محرم من الأشهر الحرم العظيمة عند الله.'}
+            tahunBaru: { 
+                id: { title: 'Tahun Baru Islam (1 Muharram)', desc: 'Peringatan Hijrah Nabi', dalil: 'Sejarah: Kalender Hijriah ditetapkan pada masa Khalifah Umar bin Khattab dengan merujuk pada momen hijrahnya Rasulullah dari Mekkah ke Madinah.', keutamaan: 'Bulan Muharram adalah salah satu dari 4 bulan haram (mulia). Dianjurkan memperbanyak puasa dan amal shalih di bulan ini.' }, 
+                ar: { title: 'رأس السنة الهجرية (١ محرم)', desc: 'ذكرى الهجرة النبوية', dalil: 'بدأ تحديد التقويم الهجري في عهد أمير المؤمنين عمر بن الخطاب بناءً على حدث الهجرة العظيم.', keutamaan: 'شهر محرم هو شهر الله الأصب، من الأشهر الحرم التي يعظم فيها الأجر.'} 
             },
-            maulid: {
-                id: { title: 'Maulid Nabi Muhammad SAW', desc: 'Peringatan Kelahiran Rasulullah', dalil: 'Sejarah kelahiran Nabi Muhammad SAW di Mekkah pada Tahun Gajah (12 Rabiul Awal).', keutamaan: 'Momen istimewa untuk meneladani akhlak, sirah, dan memperbanyak shalawat kepada Nabi.' },
-                ar: { title: 'المولد النبوي الشريف', desc: 'ذكرى مولد رسول الله', dalil: 'تاريخ ولادة النبي محمد ﷺ في مكة عام الفيل (١٢ ربيع الأول).', keutamaan: 'لحظة خاصة للاقتداء بأخلاقه وسيرته والإكثار من الصلاة عليه.'}
+            maulid: { 
+                id: { title: 'Maulid Nabi Muhammad SAW', desc: 'Peringatan Kelahiran Rasulullah', dalil: 'Sejarah: Lahirnya sosok pembawa rahmat bagi semesta alam, Nabi Muhammad SAW di Mekkah pada hari Senin, 12 Rabiul Awal Tahun Gajah.', keutamaan: 'Momen mulia untuk kembali mengingat sirah nabawiyah, meneladani akhlak mulia beliau, dan memperbanyak lantunan shalawat.' }, 
+                ar: { title: 'المولد النبوي الشريف', desc: 'ذكرى مولد رسول الله', dalil: 'تاريخ ولادة النبي محمد ﷺ في مكة عام الفيل (١٢ ربيع الأول).', keutamaan: 'لحظة خاصة للاقتداء بأخلاقه وسيرته العطرة والإكثار من الصلاة والسلام عليه.'} 
             },
-            isra: {
-                id: { title: 'Isra Mi\'raj', desc: 'Perjalanan Malam & Mikraj Nabi', dalil: 'QS. Al-Isra: 1 - "Maha Suci Allah yang telah memperjalankan hamba-Nya pada suatu malam..."', keutamaan: 'Momen bersejarah penerimaan syariat shalat fardhu 5 waktu langsung dari Allah SWT.' },
-                ar: { title: 'الإسراء والمعراج', desc: 'رحلة النبي الليلية', dalil: 'القرآن (الإسراء: ١): "سُبْحَانَ الَّذِي أَسْرَىٰ بِعَبْدِهِ لَيْلًا..."', keutamaan: 'حدث تاريخي لتلقي فريضة الصلوات الخمس مباشرة من الله تعالى.'}
+            isra: { 
+                id: { title: 'Isra Mi\'raj', desc: 'Perjalanan Malam & Mikraj Nabi', dalil: 'QS. Al-Isra: 1 - "Maha Suci Allah, yang telah memperjalankan hamba-Nya pada suatu malam dari Al Masjidil Haram ke Al Masjidil Aqsha..."', keutamaan: 'Momen sangat bersejarah di mana Rasulullah menerima syariat kewajiban shalat fardhu 5 waktu secara langsung dari Allah SWT tanpa perantara malaikat Jibril.' }, 
+                ar: { title: 'الإسراء والمعراج', desc: 'رحلة النبي الليلية إلى السماوات العلى', dalil: 'القرآن (الإسراء: ١): "سُبْحَانَ الَّذِي أَسْرَىٰ بِعَبْدِهِ لَيْلًا مِّنَ الْمَسْجِدِ الْحَرَامِ إِلَى الْمَسْجِدِ الْأَقْصَى..."', keutamaan: 'حدث تاريخي عظيم تم فيه فرض الصلوات الخمس مباشرة من الله تعالى.'} 
             },
-            puasaSenin: {
-                id: { title: 'Puasa Sunnah Senin', desc: 'Puasa Sunnah Pekanan', dalil: 'HR. Muslim: "Itu adalah hari aku dilahirkan dan hari aku diutus atau diturunkannya wahyu kepadaku."', keutamaan: 'Hari dimana amal perbuatan diangkat dan dihadapkan kepada Allah SWT.'},
-                ar: { title: 'صيام الإثنين', desc: 'سنة أسبوعية', dalil: 'رواه مسلم: "ذَاكَ يَوْمٌ وُلِدْتُ فِيهِ، وَيَوْمٌ بُعِثْتُ..."', keutamaan: 'يوم تُعرض فيه الأعمال على الله.'}
+            puasaSenin: { 
+                id: { title: 'Puasa Sunnah Senin', desc: 'Puasa Sunnah Pekanan', dalil: 'HR. Muslim no. 1162: Rasulullah ditanya mengenai puasa hari Senin, beliau menjawab: "Itu adalah hari aku dilahirkan, hari aku diutus (menjadi Nabi), dan hari wahyu diturunkan kepadaku."', keutamaan: 'HR. Tirmidzi: Amal-amal manusia diperlihatkan kepada Allah pada hari Senin dan Kamis. Berpuasa menjadikan amal kita dilaporkan dalam keadaan ketaatan tingkat tinggi.'}, 
+                ar: { title: 'صيام الإثنين', desc: 'سنة أسبوعية', dalil: 'رواه مسلم: سئل النبي عن صوم يوم الاثنين فقال: "ذَاكَ يَوْمٌ وُلِدْتُ فِيهِ، وَيَوْمٌ بُعِثْتُ أَو أُنْزِلَ عَلَيَّ فِيهِ".', keutamaan: 'يوم تُعرض فيه الأعمال على الله، ويستحب أن يُعرض عمل المؤمن وهو صائم.'} 
             },
-            puasaKamis: {
-                id: { title: 'Puasa Sunnah Kamis', desc: 'Puasa Sunnah Pekanan', dalil: 'HR. Tirmidzi: "Amal-amal manusia diperlihatkan (kepada Allah) pada hari Senin dan Kamis..."', keutamaan: 'Pintu-pintu surga dibuka pada hari Senin dan Kamis, saat yang baik untuk berpuasa.'},
-                ar: { title: 'صيام الخميس', desc: 'سنة أسبوعية', dalil: 'رواه الترمذي: "تُعْرَضُ الأَعْمَالُ يَوْمَ الاِثْنَيْنِ وَالْخَمِيسِ..."', keutamaan: 'تُفتح أبواب الجنة يومي الإثنين والخميس.'}
+            puasaKamis: { 
+                id: { title: 'Puasa Sunnah Kamis', desc: 'Puasa Sunnah Pekanan', dalil: 'HR. Tirmidzi no. 747: "Amal-amal manusia diperlihatkan (kepada Allah) pada hari Senin dan Kamis, maka aku senang apabila amalku diperlihatkan saat aku sedang berpuasa."', keutamaan: 'Hari dibukanya pintu-pintu surga dan diampuninya hamba-hamba yang tidak menyekutukan Allah. Sangat dianjurkan menyertainya dengan puasa.'}, 
+                ar: { title: 'صيام الخميس', desc: 'سنة أسبوعية', dalil: 'رواه الترمذي: "تُعْرَضُ الأَعْمَالُ يَوْمَ الاِثْنَيْنِ وَالْخَمِيسِ، فَأُحِبُّ أَنْ يُعْرَضَ عَمَلِي وَأَنَا صَائِمٌ".', keutamaan: 'تُفتح أبواب الجنة يومي الإثنين والخميس، ويغفر لكل عبد لا يشرك بالله شيئاً.'} 
             },
-            ayyamulBidh: {
-                id: { title: 'Puasa Ayyamul Bidh', desc: 'Puasa Pertengahan Bulan Hijriah', dalil: 'HR. Bukhari: "Kekasihku (Nabi SAW) mewasiatkan kepadaku tiga hal: Puasa tiga hari setiap bulan..."', keutamaan: 'Pahalanya seperti berpuasa sepanjang masa (karena 3 hari x 10 kebaikan = 30 hari).'},
-                ar: { title: 'الأيام البيض', desc: 'صيام منتصف الشهر', dalil: 'رواه البخاري: "أَوْصَانِي خَلِيلِي بِثَلَاثٍ: صِيَامِ ثَلَاثَةِ أَيَّامٍ مِنْ كُلِّ شَهْرٍ..."', keutamaan: 'أجرها كصيام الدهر كله.'}
+            ayyamulBidh: { 
+                id: { title: 'Puasa Ayyamul Bidh (13, 14, 15)', desc: 'Puasa Hari Putih Tiap Bulan', dalil: 'HR. Bukhari no. 1981: Dari Abu Hurairah, "Kekasihku (Nabi SAW) mewasiatkan kepadaku tiga hal: Puasa tiga hari setiap bulan, shalat Dhuha dua rakaat, dan shalat Witir sebelum tidur."', keutamaan: 'Dinilai sama dengan berpuasa sepanjang tahun lamanya (karena 3 hari x 10 kebaikan = 30 hari pahala berpuasa).'}, 
+                ar: { title: 'أيام البيض (١٣، ١٤، ١٥)', desc: 'صيام ثلاثة أيام من كل شهر', dalil: 'رواه البخاري: "أَوْصَانِي خَلِيلِي بِثَلَاثٍ: صِيَامِ ثَلَاثَةِ أَيَّامٍ مِنْ كُلِّ شَهْرٍ..."', keutamaan: 'صيامها يعدل صيام الدهر كله، حيث تضاعف الحسنة بعشر أمثالها.'} 
             },
-            tasua: {
-                id: { title: 'Puasa Tasu\'a (9 Muharram)', desc: 'Puasa Sehari Sebelum Asyura', dalil: 'HR. Muslim: "Apabila tahun depan (aku masih hidup), insya Allah kita akan berpuasa pada hari kesembilan."', keutamaan: 'Menyelisihi kebiasaan umat Yahudi yang hanya berpuasa di hari ke-10 (Asyura).'},
-                ar: { title: 'تاسوعاء (٩ محرم)', desc: 'صيام قبل عاشوراء', dalil: 'رواه مسلم: "لَئِنْ بَقِيتُ إِلَى قَابِلٍ لأَصُومَنَّ التَّاسِعَ".', keutamaan: 'مخالفة لعادة اليهود بصيام اليوم العاشر فقط.'}
+            tasua: { 
+                id: { title: 'Puasa Tasu\'a (9 Muharram)', desc: 'Puasa Sehari Sebelum Asyura', dalil: 'HR. Muslim no. 1134: Dari Ibnu Abbas, Nabi bersabda: "Apabila tahun depan (aku masih hidup), insya Allah kita akan berpuasa pada hari kesembilan."', keutamaan: 'Berfungsi untuk menyelisihi (berbeda dari) kebiasaan umat Yahudi yang hanya berpuasa tunggal pada hari ke-10 (Asyura) saja.'}, 
+                ar: { title: 'تاسوعاء (٩ محرم)', desc: 'صيام يوم قبل عاشوراء', dalil: 'رواه مسلم: "لَئِنْ بَقِيتُ إِلَى قَابِلٍ لأَصُومَنَّ التَّاسِعَ".', keutamaan: 'مخالفة لعادة اليهود والنصارى الذين كانوا يعظمون اليوم العاشر وحده.'} 
             },
-            asyura: {
-                id: { title: 'Puasa Asyura (10 Muharram)', desc: 'Puasa Utama di Bulan Allah', dalil: 'HR. Muslim: "Puasa hari Asyura, aku berharap kepada Allah agar Ia menghapuskan dosa setahun yang lalu."', keutamaan: 'Keutamaan agung: Menghapus dosa-dosa kecil selama setahun yang telah lalu.'},
-                ar: { title: 'عاشوراء (١٠ محرم)', desc: 'صيام عظيم في شهر الله', dalil: 'رواه مسلم: "صِيَامُ يَوْمِ عَاشُورَاءَ، أَحْتَسِبُ عَلَى اللَّهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ".', keutamaan: 'يكفر صغائر الذنوب لسنة ماضية.'}
+            asyura: { 
+                id: { title: 'Puasa Asyura (10 Muharram)', desc: 'Puasa Paling Mulia di Bulan Allah', dalil: 'HR. Muslim no. 1162: Nabi SAW bersabda, "Puasa hari Asyura, aku berharap kepada Allah agar Ia menghapuskan dosa setahun yang lalu."', keutamaan: 'Memiliki keutamaan agung yakni dijanjikan pengampunan dosa-dosa kecil yang telah dilakukan selama satu tahun penuh yang telah berlalu.'}, 
+                ar: { title: 'عاشوراء (١٠ محرم)', desc: 'أفضل الصيام بعد رمضان', dalil: 'رواه مسلم: "صِيَامُ يَوْمِ عَاشُورَاءَ، أَحْتَسِبُ عَلَى اللَّهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ".', keutamaan: 'يكفر صغائر الذنوب للعام الماضي، وهو يوم نجى الله فيه موسى من فرعون.'} 
             },
-            nisfuSyakban: {
-                id: { title: 'Puasa Nisfu Syakban', desc: 'Pertengahan Bulan Syakban', dalil: 'Dianjurkan secara umum memperbanyak puasa di bulan Syakban sebagai pemanasan menjelang Ramadan.', keutamaan: 'Malam Nisfu Syakban diyakini sebagai malam penuh berkah dan pengampunan dosa dari Allah.'},
-                ar: { title: 'النصف من شعبان', desc: 'منتصف شعبان', dalil: 'يُستحب الإكثار من الصيام في شعبان استعداداً لرمضان.', keutamaan: 'ليلة النصف من شعبان ليلة مباركة ومغفرة من الله.'}
+            nisfuSyakban: { 
+                id: { title: 'Malam/Puasa Nisfu Syakban', desc: 'Pertengahan Bulan Syakban', dalil: 'Diqiyaskan dari anjuran umum memperbanyak puasa sunnah di bulan Syakban berdasarkan amalan Rasulullah SAW menjelang datangnya bulan Ramadan.', keutamaan: 'Malam Nisfu Syakban diyakini oleh para ulama (berdasarkan sebagian riwayat) sebagai malam yang penuh pengampunan dosa dan keberkahan dari Allah.'}, 
+                ar: { title: 'النصف من شعبان', desc: 'منتصف شهر شعبان', dalil: 'يُستحب الإكثار من الصيام في شعبان بشكل عام استعداداً وتوطئة لشهر رمضان.', keutamaan: 'تعتبر ليلة النصف من شعبان عند كثير من العلماء ليلة عظيمة مباركة ينزل فيها المغفرة والرحمة.'} 
             },
-            arafah: {
-                id: { title: 'Puasa Arafah (9 Zulhijah)', desc: 'Puasa Bagi yang Tidak Wukuf', dalil: 'HR. Muslim: "Puasa Arafah (9 Dzulhijjah) dapat menghapuskan dosa setahun yang lalu dan setahun yang akan datang."', keutamaan: 'Puasa sunnah dengan ganjaran terbesar: Menghapus dosa 2 tahun (tahun lalu dan tahun depan).'},
-                ar: { title: 'يوم عرفة (٩ ذو الحجة)', desc: 'لغير الحاج', dalil: 'رواه مسلم: "صِيَامُ يَوْمِ عَرَفَةَ، أَحْتَسِبُ عَلَى اللَّهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ، وَالسَّنَةَ الَّتِي بَعْدَهُ".', keutamaan: 'صيام بأكبر أجر: يكفر ذنوب سنتين (سنة ماضية وسنة قادمة).'}
+            arafah: { 
+                id: { title: 'Puasa Arafah (9 Zulhijah)', desc: 'Puasa Bagi yang Tidak Sedang Wukuf', dalil: 'HR. Muslim no. 1162: "Puasa Arafah (9 Dzulhijjah) dapat menghapuskan dosa setahun yang lalu dan setahun yang akan datang."', keutamaan: 'Puasa sunnah dengan ganjaran paripurna dan terbesar: Menghapus total dosa selama 2 tahun beruntun (satu tahun lalu dan satu tahun depan).'}, 
+                ar: { title: 'يوم عرفة (٩ ذو الحجة)', desc: 'لغير الحاج الواقف بعرفة', dalil: 'رواه مسلم: "صِيَامُ يَوْمِ عَرَفَةَ، أَحْتَسِبُ عَلَى اللَّهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ، وَالسَّنَةَ الَّتِي بَعْدَهُ".', keutamaan: 'صيام بأكبر أجر: يكفر ذنوب سنتين، وهو أفضل أيام الدنيا وأكثرها عتقاً من النار.'} 
+            },
+            bulanHaram: {
+                id: { title: 'Bulan Haram (Bulan Mulia)', desc: 'Satu dari 4 Bulan Suci', dalil: 'QS. At-Taubah: 36 - "Sesungguhnya bilangan bulan pada sisi Allah adalah dua belas bulan... diantaranya empat bulan haram. Itulah (ketetapan) agama yang lurus, maka janganlah kamu menganiaya dirimu dalam bulan yang empat itu..."', keutamaan: 'Pahala amal kebaikan maupun ganjaran dosa maksiat akan dilipatgandakan oleh Allah secara khusus di bulan ini.'},
+                ar: { title: 'الأشهر الحرم', desc: 'شهر محرم معظم', dalil: 'القرآن (التوبة: ٣٦): "إِنَّ عِدَّةَ الشُّهُورِ عِندَ اللَّهِ اثْنَا عَشَرَ شَهْرًا... مِنْهَا أَرْبَعَةٌ حُرُمٌ ۚ ذَٰلِكَ الدِّينُ الْقَيِّمُ ۚ فَلَا تَظْلِمُوا فِيهِنَّ أَنفُسَكُمْ..."', keutamaan: 'تضاعف فيها الحسنات وتغلظ فيها السيئات، ويستحب فيها الإكثار من الطاعات.'}
+            },
+            itikaf: {
+                id: { title: 'Malam Terakhir Ramadan', desc: 'I\'tikaf & Mengejar Lailatul Qadar', dalil: 'HR. Bukhari & Muslim: "Nabi SAW senantiasa ber-i\'tikaf pada sepuluh hari terakhir di bulan Ramadan hingga beliau wafat." | QS. Al-Qadr: 3 - "Malam kemuliaan itu lebih baik dari seribu bulan."', keutamaan: 'Momen puncak spiritual. Beribadah di malam Lailatul Qadar dinilai lebih mulia daripada ibadah terus-menerus selama 83 tahun (1000 bulan).'},
+                ar: { title: 'العشر الأواخر من رمضان', desc: 'الاعتكاف وتحري ليلة القدر', dalil: 'رواه البخاري ومسلم: "كان النبي ﷺ يعتكف العشر الأواخر من رمضان حتى توفاه الله." | القرآن (القدر: ٣): "لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ".', keutamaan: 'فيها ليلة القدر التي العبادة فيها خير من عبادة ٨٣ عاماً مستمرة.'}
+            },
+            jumatMustajab: {
+                id: { title: 'Waktu Mustajab Jumat', desc: 'Waktu Emas Dikabulkannya Doa', dalil: 'HR. Bukhari & Muslim: "Di hari Jumat terdapat suatu waktu, tidaklah seorang hamba muslim mendapatinya dlm keadaan shalat lantas ia memohon sesuatu kepada Allah, melainkan Allah akan mengabulkannya." (Banyak riwayat menspesifikkan setelah Ashar hingga Maghrib).', keutamaan: 'Gunakan waktu ba\'da Ashar di hari Jumat murni untuk berdoa dan memohon hajat terbesar. Dianjurkan juga membaca Surah Al-Kahfi.'},
+                ar: { title: 'ساعة الاستجابة يوم الجمعة', desc: 'وقت إجابة الدعاء', dalil: 'رواه البخاري ومسلم: "فِيهِ سَاعَةٌ لَا يُوَافِقُهَا عَبْدٌ مُسْلِمٌ، وَهُوَ قَائِمٌ يُصَلِّي يَسْأَلُ اللَّهَ شَيْئًا، إِلَّا أَعْطَاهُ إِيَّاهُ" (وأرجح الأقوال أنها بعد العصر).', keutamaan: 'وقت ثمين جداً لقبول الدعوات، ويُستحب تخصيصه للدعاء والصلاة على النبي وقراءة سورة الكهف.'}
             }
         };
 
-        // --- UTILS ---
-        const safeGetItem = (key, defaultValue) => {
-            try { const item = localStorage.getItem(key); return item !== null ? JSON.parse(item) : defaultValue; } catch (error) { return defaultValue; }
-        };
+        const safeGetItem = (key, defaultValue) => { try { const item = localStorage.getItem(key); return item !== null ? JSON.parse(item) : defaultValue; } catch (error) { return defaultValue; } };
         const safeSetItem = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} };
 
-        // PENGATURAN BULAN HIJRIAH (HARDCODED UNTUK MENCEGAH BUG BROWSER)
         const hijriMonthsMap = {
             id: ['Muharram', 'Safar', 'Rabiul Awal', 'Rabiul Akhir', 'Jumadil Awal', 'Jumadil Akhir', 'Rajab', 'Syakban', 'Ramadan', 'Syawal', 'Zulkaidah', 'Zulhijah'],
             ar: ['محرم', 'صفر', 'ربيع الأول', 'ربيع الآخر', 'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة']
         };
 
+        const formatNumber = (str, lang) => {
+            if (lang !== 'ar') return str;
+            return String(str).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+        };
+
         const getHijriDateDetails = (baseDate, offsetDays, lang) => {
-            const date = new Date(baseDate.getTime() + offsetDays * 86400000); // Terapkan Matla' Offset
-            
-            // Dapatkan angka numerik dari format tanggal Islamic (paling stabil di semua browser)
+            const date = new Date(baseDate.getTime() + offsetDays * 86400000); 
             const partsDay = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric' }).formatToParts(date);
             const partsMonthNum = new Intl.DateTimeFormat('en-US-u-ca-islamic', { month: 'numeric' }).formatToParts(date);
             const partsYear = new Intl.DateTimeFormat('en-US-u-ca-islamic', { year: 'numeric' }).formatToParts(date);
-            
             const monthNum = parseInt(partsMonthNum.find(p => p.type === 'month').value, 10);
-            const monthStrValue = hijriMonthsMap[lang][monthNum - 1]; // Pastikan selalu dapat bulan Hijriah yang benar
-            
-            return {
-                day: parseInt(partsDay.find(p => p.type === 'day').value, 10),
-                monthStr: monthStrValue,
-                monthNum: monthNum,
-                year: partsYear.find(p => p.type === 'year').value
-            };
+            const monthStrValue = hijriMonthsMap[lang][monthNum - 1]; 
+            return { day: parseInt(partsDay.find(p => p.type === 'day').value, 10), monthStr: monthStrValue, monthNum: monthNum, year: partsYear.find(p => p.type === 'year').value };
         };
 
         const getIslamicEvents = (date, hijri, lang) => {
-            const events = [];
-            const dayOfWeek = date.getDay(); 
-            const hDay = hijri.day;
-            const hMonth = hijri.monthNum;
+            const events = []; const dayOfWeek = date.getDay(); const hDay = hijri.day; const hMonth = hijri.monthNum;
+            
+            // Cek Bulan Haram
+            const isBulanHaram = [1, 7, 11, 12].includes(hMonth);
+            if (isBulanHaram) events.push({ type: 'bulan_haram', ...eventDict.bulanHaram[lang] });
+
+            // Cek Jumat Mustajab
+            if (dayOfWeek === 5) events.push({ type: 'jumat_mustajab', ...eventDict.jumatMustajab[lang] });
+
+            // Cek Itikaf / 10 Malam Terakhir
+            if (hMonth === 9 && hDay >= 21) events.push({ type: 'itikaf', ...eventDict.itikaf[lang] });
 
             const isIdulFitri = (hDay === 1 && hMonth === 10);
             const isIdulAdha = (hDay === 10 && hMonth === 12);
@@ -261,7 +431,6 @@
             if (isIdulFitri) events.push({ type: 'hari_besar', ...eventDict.idulFitri[lang] });
             if (isIdulAdha) events.push({ type: 'hari_besar', ...eventDict.idulAdha[lang] });
             if (isTasyriq) events.push({ type: 'hari_besar', ...eventDict.tasyriq[lang] });
-
             if (hMonth === 9) events.push({ type: 'puasa_wajib', ...eventDict.ramadan[lang] });
 
             if (hDay === 1 && hMonth === 1) events.push({ type: 'hari_besar', ...eventDict.tahunBaru[lang] });
@@ -271,57 +440,105 @@
             if (!isIdulFitri && !isIdulAdha && !isTasyriq && hMonth !== 9) {
                 if (dayOfWeek === 1) events.push({ type: 'puasa_sunnah', ...eventDict.puasaSenin[lang] });
                 else if (dayOfWeek === 4) events.push({ type: 'puasa_sunnah', ...eventDict.puasaKamis[lang] });
-
                 if (hDay === 13 || hDay === 14 || hDay === 15) events.push({ type: 'puasa_sunnah', ...eventDict.ayyamulBidh[lang] });
-
                 if (hDay === 9 && hMonth === 1) events.push({ type: 'puasa_sunnah', ...eventDict.tasua[lang] });
                 if (hDay === 10 && hMonth === 1) events.push({ type: 'puasa_sunnah', ...eventDict.asyura[lang] });
                 if (hDay === 15 && hMonth === 8) events.push({ type: 'puasa_sunnah', ...eventDict.nisfuSyakban[lang] });
                 if (hDay === 9 && hMonth === 12) events.push({ type: 'puasa_sunnah', ...eventDict.arafah[lang] });
             }
-
             return events;
         };
 
-        const generateCalendarGrid = (year, month, offset, lang) => {
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const daysInPrevMonth = new Date(year, month, 0).getDate();
-            
-            let grid = [];
-            
-            for (let i = 0; i < firstDay; i++) {
-                const day = daysInPrevMonth - firstDay + i + 1;
-                const date = new Date(year, month - 1, day);
-                const hijri = getHijriDateDetails(date, offset, lang);
-                const islamicEvents = getIslamicEvents(date, hijri, lang);
-                grid.push({ date, day, isCurrentMonth: false, hijri, islamicEvents });
+        const getQuranSegments = (target, lang, mode) => {
+            if (mode === 'tahfizh') {
+                const val = String(target).replace('t_', '');
+                const totalPages = 604;
+                const p = lang === 'ar' ? 'صفحة' : 'Halaman';
+                const topHalf = lang === 'ar' ? 'أعلى' : 'Atas';
+                const bottomHalf = lang === 'ar' ? 'أسفل' : 'Bawah';
+                const segments = [];
+                
+                if (val === '0.5') {
+                    for(let i=1; i<=totalPages; i++) {
+                        segments.push(`${p} ${formatNumber(i, lang)} (${topHalf})`);
+                        segments.push(`${p} ${formatNumber(i, lang)} (${bottomHalf})`);
+                    }
+                } else {
+                    const step = parseInt(val) || 1;
+                    for(let i=1; i<=totalPages; i+=step) {
+                        let end = i + step - 1;
+                        if (end > totalPages) end = totalPages;
+                        if (i === end) segments.push(`${p} ${formatNumber(i, lang)}`);
+                        else segments.push(`${p} ${formatNumber(i, lang)} - ${formatNumber(end, lang)}`);
+                    }
+                }
+                return segments;
+            } else {
+                const j = lang === 'ar' ? 'الجزء' : 'Juz';
+                const h = lang === 'ar' ? 'الحزب' : 'Hizb';
+                const m = lang === 'ar' ? 'المنزل' : 'Manzil';
+                switch(parseInt(target)) {
+                    case 6: return Array.from({length: 6}, (_, i) => `${j} ${formatNumber(i*5 + 1, lang)} - ${formatNumber(i*5 + 5, lang)}`);
+                    case 7: return [ `${m} ${formatNumber(1, lang)} (الفاتحة - النساء)`, `${m} ${formatNumber(2, lang)} (المائدة - التوبة)`, `${m} ${formatNumber(3, lang)} (يونس - النحل)`, `${m} ${formatNumber(4, lang)} (الإسراء - الفرقان)`, `${m} ${formatNumber(5, lang)} (الشعراء - يس)`, `${m} ${formatNumber(6, lang)} (الصافات - الحجرات)`, `${m} ${formatNumber(7, lang)} (ق - الناس)` ];
+                    case 10: return Array.from({length: 10}, (_, i) => `${j} ${formatNumber(i*3 + 1, lang)} - ${formatNumber(i*3 + 3, lang)}`);
+                    case 30: return Array.from({length: 30}, (_, i) => `${j} ${formatNumber(i + 1, lang)}`);
+                    case 60: return Array.from({length: 60}, (_, i) => `${h} ${formatNumber(i + 1, lang)}`);
+                    default: return [];
+                }
             }
-            
-            for (let i = 1; i <= daysInMonth; i++) {
-                const date = new Date(year, month, i);
-                const hijri = getHijriDateDetails(date, offset, lang);
-                const islamicEvents = getIslamicEvents(date, hijri, lang);
-                grid.push({ date, day: i, isCurrentMonth: true, hijri, islamicEvents });
+        };
+
+        const getHealthEvents = (date, enabled, hphtStr, cycle, duration, isPregnant, lang) => {
+            if (!enabled || !hphtStr) return [];
+            const events = []; const t = translations[lang];
+            const hpht = new Date(`${hphtStr}T00:00:00`);
+            const current = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const diffTime = Date.UTC(current.getFullYear(), current.getMonth(), current.getDate()) - Date.UTC(hpht.getFullYear(), hpht.getMonth(), hpht.getDate());
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (isPregnant) {
+                if (diffDays === 280) events.push({ id: `hpl`, type: 'health_hpl', title: t.hplTitle, start: '00:00', end: '23:59', desc: t.hplDesc, dalil: t.hplDalil, keutamaan: t.hplKeutamaan });
+                else if (diffDays > 0 && diffDays < 280 && diffDays % 7 === 0) events.push({ id: `preg`, type: 'health_preg', title: `${t.pregWeekTitle}${formatNumber(diffDays/7, lang)})`, start: '00:00', end: '23:59', desc: t.pregWeekDesc });
+            } else {
+                if (diffDays >= 0) {
+                    const cycleDay = diffDays % cycle;
+                    if (cycleDay < duration) events.push({ id: `haid`, type: 'health_haid', title: `${t.haidTitle}${formatNumber(cycleDay + 1, lang)})`, start: '00:00', end: '23:59', desc: t.haidDesc, dalil: t.haidDalil, keutamaan: t.haidKeutamaan });
+                    else if (cycleDay === duration) events.push({ id: `suci`, type: 'health_suci', title: t.suciTitle, start: '00:00', end: '23:59', desc: t.suciDesc, dalil: t.suciDalil, keutamaan: t.suciKeutamaan });
+                }
             }
-            
-            const remaining = 42 - grid.length;
-            for (let i = 1; i <= remaining; i++) {
-                const date = new Date(year, month + 1, i);
-                const hijri = getHijriDateDetails(date, offset, lang);
-                const islamicEvents = getIslamicEvents(date, hijri, lang);
-                grid.push({ date, day: i, isCurrentMonth: false, hijri, islamicEvents });
-            }
-            
-            return grid;
+            return events;
         };
 
         const formatDateKey = (date) => `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
         const formatExportDate = (dateStr, timeStr) => new Date(`${dateStr}T${timeStr}:00`).toISOString().replace(/-|:|\.\d\d\d/g, "");
 
-        const formatNumber = (str, lang) => {
-            if (lang !== 'ar') return str;
-            return String(str).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+        const getRoutineEvents = (date, kajianList, kuliahList) => {
+            const events = [];
+            const dTime = date.getTime();
+            const dayOfWeek = date.getDay();
+            const dateOfMonth = date.getDate();
+            const dateKey = formatDateKey(date);
+
+            kajianList.forEach(k => {
+                const sDate = k.startDate ? new Date(`${k.startDate}T00:00:00`).getTime() : 0;
+                const eDate = k.endDate ? new Date(`${k.endDate}T23:59:59`).getTime() : Infinity;
+                if (dTime >= sDate && dTime <= eDate) {
+                    if (k.recurrence === 'weekly' && parseInt(k.dayOfWeek) === dayOfWeek) events.push({...k, type: 'routine_kajian', dateKey});
+                    else if (k.recurrence === 'monthly' && parseInt(k.dateOfMonth) === dateOfMonth) events.push({...k, type: 'routine_kajian', dateKey});
+                    else if (k.recurrence === 'none' && k.startDate === dateKey) events.push({...k, type: 'routine_kajian', dateKey});
+                }
+            });
+
+            kuliahList.forEach(k => {
+                const sDate = k.startDate ? new Date(`${k.startDate}T00:00:00`).getTime() : 0;
+                const eDate = k.endDate ? new Date(`${k.endDate}T23:59:59`).getTime() : Infinity;
+                if (dTime >= sDate && dTime <= eDate && parseInt(k.dayOfWeek) === dayOfWeek) {
+                    const sessionData = k.sessions?.[dateKey] || {};
+                    events.push({...k, ...sessionData, title: k.subject, type: 'routine_kuliah', dateKey, originalId: k.id});
+                }
+            });
+
+            return events.sort((a, b) => a.start.localeCompare(b.start));
         };
 
         const App = () => {
@@ -329,13 +546,37 @@
             const [language, setLanguage] = useState(() => safeGetItem('cal_lang', 'id'));
             const [hijriOffset, setHijriOffset] = useState(() => safeGetItem('cal_hijri_offset', 0));
             const [userName, setUserName] = useState(() => safeGetItem('cal_user_name', 'Fulan'));
+            
             const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+            const [isRoutineOpen, setIsRoutineOpen] = useState(false);
+
+            const [healthEnabled, setHealthEnabled] = useState(() => safeGetItem('cal_health_enabled', false));
+            const [hpht, setHpht] = useState(() => safeGetItem('cal_health_hpht', ''));
+            const [cycle, setCycle] = useState(() => safeGetItem('cal_health_cycle', 28));
+            const [haidDuration, setHaidDuration] = useState(() => safeGetItem('cal_health_duration', 7));
+            const [isPregnant, setIsPregnant] = useState(() => safeGetItem('cal_health_pregnant', false));
+
+            const [quranEnabled, setQuranEnabled] = useState(() => safeGetItem('cal_quran_enabled', false));
+            const [quranMode, setQuranMode] = useState(() => safeGetItem('cal_quran_mode', 'tilawah'));
+            const [quranTarget, setQuranTarget] = useState(() => safeGetItem('cal_quran_target', '30'));
+            const [quranStartDate, setQuranStartDate] = useState(() => safeGetItem('cal_quran_start', formatDateKey(new Date())));
+            const [quranHistory, setQuranHistory] = useState(() => safeGetItem('cal_quran_history', {}));
+
+            const [kajianSchedules, setKajianSchedules] = useState(() => safeGetItem('cal_kajian', []));
+            const [kuliahSchedules, setKuliahSchedules] = useState(() => safeGetItem('cal_kuliah', []));
 
             const [currentDate, setCurrentDate] = useState(new Date());
             const [selectedDate, setSelectedDate] = useState(new Date());
             const [events, setEvents] = useState(() => safeGetItem('cal_events', {}));
+            
             const [isFormOpen, setIsFormOpen] = useState(false);
             const [newEvent, setNewEvent] = useState({ title: '', start: '08:00', end: '09:00', desc: '' });
+
+            const [routineTab, setRoutineTab] = useState('kajian');
+            const [newKajian, setNewKajian] = useState({ title: '', speaker: '', start: '18:00', end: '19:30', recurrence: 'weekly', dayOfWeek: 0, dateOfMonth: 1, startDate: formatDateKey(new Date()), endDate: '' });
+            const [newKuliah, setNewKuliah] = useState({ subject: '', lecturer: '', start: '08:00', end: '09:40', dayOfWeek: 1, startDate: formatDateKey(new Date()), endDate: '' });
+
+            const [editSessionObj, setEditSessionObj] = useState(null);
 
             const theme = {
                 bg: isDayTime ? 'bg-fuchsia-50/50' : 'bg-[#1a1128]',
@@ -350,116 +591,196 @@
 
             const tString = translations[language];
 
-            const toggleTheme = () => {
-                const newTheme = !isDayTime;
-                setIsDayTime(newTheme);
-                safeSetItem('cal_theme', newTheme);
-            };
+            const quranData = useMemo(() => {
+                if (!quranEnabled || !quranStartDate) return { schedule: {}, projectedKhatam: null, completedCount: 0, targetTotal: 0 };
+                const segments = getQuranSegments(quranTarget, language, quranMode);
+                const targetTotal = segments.length;
+                let schedule = {}; let cSeg = 0; let curr = new Date(`${quranStartDate}T00:00:00`); let completedCount = 0;
+                const today = new Date(); today.setHours(0,0,0,0);
+                let loops = 0;
+                
+                const hphtDate = hpht ? new Date(`${hpht}T00:00:00`) : null;
 
-            const toggleLanguage = () => {
-                const newLang = language === 'id' ? 'ar' : 'id';
-                setLanguage(newLang);
-                safeSetItem('cal_lang', newLang);
-            };
+                while (cSeg < targetTotal && loops < 3000) {
+                    const dateStr = formatDateKey(curr);
+                    
+                    let isHaidDay = false;
+                    if (healthEnabled && !isPregnant && hphtDate) {
+                        const diffTime = Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate()) - Date.UTC(hphtDate.getFullYear(), hphtDate.getMonth(), hphtDate.getDate());
+                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                        if (diffDays >= 0) {
+                            const cycleDay = diffDays % cycle;
+                            if (cycleDay < haidDuration) isHaidDay = true;
+                        }
+                    }
 
-            const handleSaveSettings = (e) => {
-                const target = e.target;
-                if (target.name === 'userName') {
-                    setUserName(target.value);
-                    safeSetItem('cal_user_name', target.value);
-                } else if (target.name === 'hijriOffset') {
-                    const val = parseInt(target.value);
-                    setHijriOffset(val);
-                    safeSetItem('cal_hijri_offset', val);
+                    if (isHaidDay) {
+                        schedule[dateStr] = { isHaidPause: true };
+                        curr.setDate(curr.getDate() + 1); loops++;
+                        continue; 
+                    }
+
+                    const isDone = !!quranHistory[dateStr];
+                    schedule[dateStr] = { segmentIndex: cSeg, segmentName: segments[cSeg], isDone: isDone, isMissed: !isDone && curr < today };
+                    if (isDone) { completedCount++; cSeg++; } else if (curr >= today) { cSeg++; }
+                    curr.setDate(curr.getDate() + 1); loops++;
                 }
+                const projectedKhatam = new Date(curr); projectedKhatam.setDate(projectedKhatam.getDate() - 1); 
+                return { schedule, projectedKhatam, completedCount, targetTotal, segments };
+            }, [quranEnabled, quranStartDate, quranTarget, quranHistory, language, quranMode, healthEnabled, hpht, cycle, haidDuration, isPregnant]);
+
+            const generateCalendarGridData = () => {
+                const year = currentDate.getFullYear(); const month = currentDate.getMonth();
+                const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate(); const daysInPrevMonth = new Date(year, month, 0).getDate();
+                let grid = [];
+                const addGridItem = (d, isCurrent) => {
+                    const hijri = getHijriDateDetails(d, hijriOffset, language);
+                    grid.push({ 
+                        date: d, day: d.getDate(), isCurrentMonth: isCurrent, hijri, 
+                        islamicEvents: getIslamicEvents(d, hijri, language), 
+                        healthEvents: getHealthEvents(d, healthEnabled, hpht, cycle, haidDuration, isPregnant, language),
+                        routineEvents: getRoutineEvents(d, kajianSchedules, kuliahSchedules)
+                    });
+                };
+                for (let i = 0; i < firstDay; i++) addGridItem(new Date(year, month - 1, daysInPrevMonth - firstDay + i + 1), false);
+                for (let i = 1; i <= daysInMonth; i++) addGridItem(new Date(year, month, i), true);
+                for (let i = 1; i <= 42 - grid.length; i++) addGridItem(new Date(year, month + 1, i), false);
+                return grid;
             };
 
-            const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-            const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-            const goToday = () => {
-                const today = new Date();
-                setCurrentDate(today);
-                setSelectedDate(today);
+            const grid = useMemo(generateCalendarGridData, [currentDate, hijriOffset, language, healthEnabled, hpht, cycle, haidDuration, isPregnant, kajianSchedules, kuliahSchedules]);
+
+            const toggleTheme = () => { setIsDayTime(!isDayTime); safeSetItem('cal_theme', !isDayTime); };
+            const handleSaveSettings = (e) => {
+                const t = e.target;
+                if (t.name === 'userName') { setUserName(t.value); safeSetItem('cal_user_name', t.value); } 
+                else if (t.name === 'hijriOffset') { const v = parseInt(t.value); setHijriOffset(v); safeSetItem('cal_hijri_offset', v); } 
+                else if (t.name === 'healthEnabled') { setHealthEnabled(t.checked); safeSetItem('cal_health_enabled', t.checked); } 
+                else if (t.name === 'hpht') { setHpht(t.value); safeSetItem('cal_health_hpht', t.value); } 
+                else if (t.name === 'cycle') { const v = Math.max(15, parseInt(t.value) || 28); setCycle(v); safeSetItem('cal_health_cycle', v); } 
+                else if (t.name === 'haidDuration') { const v = Math.min(15, Math.max(1, parseInt(t.value) || 7)); setHaidDuration(v); safeSetItem('cal_health_duration', v); } 
+                else if (t.name === 'isPregnant') { setIsPregnant(t.checked); safeSetItem('cal_health_pregnant', t.checked); }
+                else if (t.name === 'quranEnabled') { setQuranEnabled(t.checked); safeSetItem('cal_quran_enabled', t.checked); }
+                else if (t.name === 'quranMode') { 
+                    setQuranMode(t.value); safeSetItem('cal_quran_mode', t.value); 
+                    const defaultT = t.value === 'tilawah' ? '30' : 't_1';
+                    setQuranTarget(defaultT); safeSetItem('cal_quran_target', defaultT);
+                }
+                else if (t.name === 'quranTarget') { setQuranTarget(t.value); safeSetItem('cal_quran_target', t.value); }
+                else if (t.name === 'quranStartDate') { setQuranStartDate(t.value); safeSetItem('cal_quran_start', t.value); }
+            };
+
+            const handleAddKajian = (e) => {
+                e.preventDefault(); if(!newKajian.title) return;
+                const updated = [...kajianSchedules, { id: Date.now().toString(), ...newKajian }];
+                setKajianSchedules(updated); safeSetItem('cal_kajian', updated);
+                setNewKajian({ ...newKajian, title: '', speaker: ''});
+            };
+
+            const handleAddKuliah = (e) => {
+                e.preventDefault(); if(!newKuliah.subject) return;
+                const updated = [...kuliahSchedules, { id: Date.now().toString(), ...newKuliah, sessions: {} }];
+                setKuliahSchedules(updated); safeSetItem('cal_kuliah', updated);
+                setNewKuliah({ ...newKuliah, subject: '', lecturer: ''});
+            };
+
+            const saveSessionEdit = (e) => {
+                e.preventDefault();
+                const updated = kuliahSchedules.map(k => {
+                    if (k.id === editSessionObj.id) {
+                        return { ...k, sessions: { ...k.sessions, [editSessionObj.dateKey]: { topic: editSessionObj.topic, link: editSessionObj.link, task: editSessionObj.task } } };
+                    }
+                    return k;
+                });
+                setKuliahSchedules(updated); safeSetItem('cal_kuliah', updated);
+                setEditSessionObj(null);
+            };
+
+            const toggleQuranTask = (dateKey) => {
+                const newHist = { ...quranHistory };
+                if (newHist[dateKey]) delete newHist[dateKey]; else newHist[dateKey] = true;
+                setQuranHistory(newHist); safeSetItem('cal_quran_history', newHist);
             };
 
             const handleAddEvent = (e) => {
-                e.preventDefault();
-                if (!newEvent.title.trim()) return;
-
-                const dateKey = formatDateKey(selectedDate);
-                const dayEvents = events[dateKey] || [];
-                const updatedEvents = { ...events, [dateKey]: [...dayEvents, { id: Date.now().toString(), ...newEvent }] };
-                
-                updatedEvents[dateKey].sort((a, b) => a.start.localeCompare(b.start));
-
-                setEvents(updatedEvents);
-                safeSetItem('cal_events', updatedEvents);
-                setNewEvent({ title: '', start: '08:00', end: '09:00', desc: '' });
-                setIsFormOpen(false);
+                e.preventDefault(); if (!newEvent.title.trim()) return;
+                const dKey = formatDateKey(selectedDate);
+                const updated = { ...events, [dKey]: [...(events[dKey] || []), { id: Date.now().toString(), ...newEvent }].sort((a, b) => a.start.localeCompare(b.start)) };
+                setEvents(updated); safeSetItem('cal_events', updated);
+                setNewEvent({ title: '', start: '08:00', end: '09:00', desc: '' }); setIsFormOpen(false);
             };
 
-            const handleDeleteEvent = (dateKey, eventId) => {
-                const dayEvents = events[dateKey].filter(e => e.id !== eventId);
-                const updatedEvents = { ...events, [dateKey]: dayEvents };
-                if (dayEvents.length === 0) delete updatedEvents[dateKey];
-                
-                setEvents(updatedEvents);
-                safeSetItem('cal_events', updatedEvents);
+            const handleDeleteEvent = (dKey, id) => {
+                const dayEvts = events[dKey].filter(e => e.id !== id);
+                const updated = { ...events, [dKey]: dayEvts };
+                if (dayEvts.length === 0) delete updated[dKey];
+                setEvents(updated); safeSetItem('cal_events', updated);
             };
 
             const exportToGoogle = (event, isFullDay = false) => {
-                const dateKey = formatDateKey(selectedDate);
+                const dateKey = event.dateKey || formatDateKey(selectedDate);
                 const startStr = formatExportDate(dateKey, event.start || "00:00");
                 const endStr = formatExportDate(dateKey, event.end || "23:59");
-                
-                let url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startStr}/${endStr}&details=${encodeURIComponent(event.desc || '')}`;
+                let url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startStr}/${endStr}&details=${encodeURIComponent(event.desc || event.topic || '')}`;
                 if(event.dalil) url += encodeURIComponent(`\n\n${tString.dalilLabel}: ${event.dalil}\n${tString.keutamaanLabel}: ${event.keutamaan}`);
+                if(event.link) url += encodeURIComponent(`\n\nLink: ${event.link}`);
+                if(event.task) url += encodeURIComponent(`\n\nTugas: ${event.task}`);
                 window.open(url, '_blank');
             };
 
             const exportToApple = (event, isFullDay = false) => {
-                const dateKey = formatDateKey(selectedDate);
+                const dateKey = event.dateKey || formatDateKey(selectedDate);
                 const startStr = formatExportDate(dateKey, event.start || "00:00");
                 const endStr = formatExportDate(dateKey, event.end || "23:59");
-                
-                let desc = event.desc ? event.desc.replace(/\n/g, '\\n') : '';
+                let desc = event.desc ? event.desc.replace(/\n/g, '\\n') : (event.topic ? event.topic.replace(/\n/g, '\\n') : '');
                 if(event.dalil) desc += `\\n\\n${tString.dalilLabel}: ${event.dalil}\\n${tString.keutamaanLabel}: ${event.keutamaan}`;
-
+                if(event.link) desc += `\\n\\nLink: ${event.link}`;
+                if(event.task) desc += `\\n\\nTugas: ${event.task}`;
                 const icsContent = [
                     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Jadwal Premium//ID", "BEGIN:VEVENT",
                     `UID:${event.id || Date.now()}@jadwalpremium`, `DTSTAMP:${startStr}`, `DTSTART:${startStr}`, `DTEND:${endStr}`,
                     `SUMMARY:${event.title}`, `DESCRIPTION:${desc}`, "END:VEVENT", "END:VCALENDAR"
                 ].join("\n");
-
                 const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `${event.title.replace(/\s+/g, '_')}.ics`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${event.title.replace(/\s+/g, '_')}.ics`;
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
             };
 
-            const grid = useMemo(() => generateCalendarGrid(currentDate.getFullYear(), currentDate.getMonth(), hijriOffset, language), [currentDate, hijriOffset, language]);
+            const getTargetLabel = (target, mode) => {
+                if (mode === 'tilawah') {
+                    return tString[`target${target}`];
+                } else {
+                    if (target === 't_0.5') return tString.targetHalfPage;
+                    if (target === 't_1') return tString.target1Page;
+                    if (target === 't_2') return tString.target2Pages;
+                    if (target === 't_3') return tString.target3Pages;
+                    return target;
+                }
+            };
+
             const selectedDateKey = formatDateKey(selectedDate);
             const currentDayEvents = events[selectedDateKey] || [];
-            
             const selectedHijriInfo = getHijriDateDetails(selectedDate, hijriOffset, language);
             const selectedIslamicEvents = getIslamicEvents(selectedDate, selectedHijriInfo, language);
+            const selectedHealthEvents = getHealthEvents(selectedDate, healthEnabled, hpht, cycle, haidDuration, isPregnant, language);
+            const selectedRoutineEvents = getRoutineEvents(selectedDate, kajianSchedules, kuliahSchedules);
+            const selectedQuranTask = quranData.schedule[selectedDateKey];
             const currentHijriInfo = getHijriDateDetails(currentDate, hijriOffset, language);
 
-            const getEventColor = (type) => type === 'hari_besar' ? 'bg-rose-50 border-rose-300 text-rose-800' : type === 'puasa_sunnah' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : type === 'puasa_wajib' ? 'bg-amber-50 border-amber-300 text-amber-800' : theme.card;
-            const getDarkEventColor = (type) => type === 'hari_besar' ? 'bg-rose-900/30 border-rose-500/50 text-rose-200' : type === 'puasa_sunnah' ? 'bg-emerald-900/30 border-emerald-500/50 text-emerald-200' : type === 'puasa_wajib' ? 'bg-amber-900/30 border-amber-500/50 text-amber-200' : theme.card;
-            const getRibbonColor = (type) => type === 'hari_besar' ? 'bg-rose-500' : type === 'puasa_sunnah' ? 'bg-emerald-500' : type === 'puasa_wajib' ? 'bg-amber-500' : 'bg-gradient-feminine';
-            const getIconForType = (type) => type === 'hari_besar' ? <IconAlertTriangle className="w-5 h-5 text-rose-500" /> : type === 'puasa_wajib' ? <IconStar className="w-5 h-5 text-amber-500" /> : <IconMoon className="w-5 h-5 text-emerald-500" />;
+            const getEventColor = (type) => type === 'hari_besar' ? 'bg-rose-50 border-rose-300 text-rose-800' : type === 'puasa_sunnah' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : type === 'puasa_wajib' ? 'bg-amber-50 border-amber-300 text-amber-800' : type === 'health_haid' ? 'bg-pink-50 border-pink-300 text-pink-800' : type === 'health_suci' ? 'bg-sky-50 border-sky-300 text-sky-800' : type === 'health_hpl' || type === 'health_preg' ? 'bg-fuchsia-50 border-fuchsia-300 text-fuchsia-800' : type === 'routine_kajian' ? 'bg-orange-50 border-orange-300 text-orange-800' : type === 'routine_kuliah' ? 'bg-teal-50 border-teal-300 text-teal-800' : type === 'bulan_haram' ? 'bg-purple-50 border-purple-300 text-purple-800' : type === 'jumat_mustajab' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : type === 'itikaf' ? 'bg-indigo-50 border-indigo-300 text-indigo-800' : theme.card;
+            const getDarkEventColor = (type) => type === 'hari_besar' ? 'bg-rose-900/30 border-rose-500/50 text-rose-200' : type === 'puasa_sunnah' ? 'bg-emerald-900/30 border-emerald-500/50 text-emerald-200' : type === 'puasa_wajib' ? 'bg-amber-900/30 border-amber-500/50 text-amber-200' : type === 'health_haid' ? 'bg-pink-900/30 border-pink-500/50 text-pink-200' : type === 'health_suci' ? 'bg-sky-900/30 border-sky-500/50 text-sky-200' : type === 'health_hpl' || type === 'health_preg' ? 'bg-fuchsia-900/30 border-fuchsia-500/50 text-fuchsia-200' : type === 'routine_kajian' ? 'bg-orange-900/30 border-orange-500/50 text-orange-200' : type === 'routine_kuliah' ? 'bg-teal-900/30 border-teal-500/50 text-teal-200' : type === 'bulan_haram' ? 'bg-purple-900/30 border-purple-500/50 text-purple-200' : type === 'jumat_mustajab' ? 'bg-emerald-900/30 border-emerald-500/50 text-emerald-200' : type === 'itikaf' ? 'bg-indigo-900/30 border-indigo-500/50 text-indigo-200' : theme.card;
+            const getRibbonColor = (type) => type === 'hari_besar' ? 'bg-rose-500' : type === 'puasa_sunnah' ? 'bg-emerald-500' : type === 'puasa_wajib' ? 'bg-amber-500' : type === 'health_haid' ? 'bg-pink-500' : type === 'health_suci' ? 'bg-sky-500' : type === 'health_hpl' || type === 'health_preg' ? 'bg-fuchsia-500' : type === 'routine_kajian' ? 'bg-orange-500' : type === 'routine_kuliah' ? 'bg-teal-500' : type === 'bulan_haram' ? 'bg-purple-500' : type === 'jumat_mustajab' ? 'bg-emerald-500' : type === 'itikaf' ? 'bg-indigo-500' : 'bg-gradient-feminine';
+            const getIconForType = (type) => type === 'hari_besar' ? <IconAlertTriangle className="w-5 h-5 text-rose-500" /> : type === 'puasa_wajib' ? <IconStar className="w-5 h-5 text-amber-500" /> : type === 'puasa_sunnah' ? <IconMoon className="w-5 h-5 text-emerald-500" /> : type === 'health_haid' ? <IconHeart className="w-5 h-5 text-pink-500" /> : type === 'health_suci' ? <IconSun className="w-5 h-5 text-sky-500" /> : type === 'health_hpl' || type === 'health_preg' ? <IconBaby className="w-5 h-5 text-fuchsia-500" /> : type === 'routine_kajian' ? <IconMic className="w-5 h-5 text-orange-500" /> : type === 'routine_kuliah' ? <IconBriefcase className="w-5 h-5 text-teal-500" /> : type === 'bulan_haram' ? <IconStar className="w-5 h-5 text-purple-500" /> : type === 'jumat_mustajab' ? <IconAward className="w-5 h-5 text-emerald-500" /> : type === 'itikaf' ? <IconMoon className="w-5 h-5 text-indigo-500" /> : <IconClock className="w-5 h-5 text-primary" />;
 
             return (
                 <div dir={language === 'ar' ? 'rtl' : 'ltr'} className={`min-h-screen transition-colors duration-1000 ${theme.bg} ${theme.text} ${language === 'ar' ? 'font-arabic' : 'font-sans'} pb-20 overflow-x-hidden`}>
-                    
                     <div className="relative pt-8 md:pt-12 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                         
                         {/* TOP BUTTONS */}
                         <div className={`absolute top-4 ${language === 'ar' ? 'left-4 md:left-8' : 'right-4 md:right-8'} z-20 flex gap-2`}>
+                            <button onClick={() => setIsRoutineOpen(true)} className={`p-3 rounded-full backdrop-blur-md transition-all shadow-lg hover:scale-105 ${isDayTime ? 'bg-white/90 text-primary hover:bg-fuchsia-100' : 'bg-[#2d1b4e]/80 text-secondary hover:bg-[#2d1b4e]'}`}>
+                                <IconBriefcase className="w-5 h-5" />
+                            </button>
                             <button onClick={() => setIsSettingsOpen(true)} className={`p-3 rounded-full backdrop-blur-md transition-all shadow-lg hover:scale-105 ${isDayTime ? 'bg-white/90 text-primary hover:bg-fuchsia-100' : 'bg-[#2d1b4e]/80 text-secondary hover:bg-[#2d1b4e]'}`}>
                                 <IconSettings className="w-5 h-5" />
                             </button>
@@ -469,21 +790,12 @@
                         </div>
 
                         <div className="text-center mb-8 md:mb-10 mt-6 md:mt-0">
-                            {userName && (
-                                <p className={`font-semibold mb-1 text-sm md:text-base ${isDayTime ? 'text-primary' : 'text-secondary'}`}>
-                                    {tString.greeting}, {userName} ✨
-                                </p>
-                            )}
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gradient mb-3">
-                                {tString.title}
-                            </h1>
-                            <p className={`font-semibold text-sm md:text-base ${theme.textMuted}`}>
-                                {tString.subtitle}
-                            </p>
+                            {userName && <p className={`font-semibold mb-1 text-sm md:text-base ${isDayTime ? 'text-primary' : 'text-secondary'}`}>{tString.greeting}, {userName} ✨</p>}
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gradient mb-3">{tString.title}</h1>
+                            <p className={`font-semibold text-sm md:text-base ${theme.textMuted}`}>{tString.subtitle}</p>
                         </div>
 
                         <div className="grid lg:grid-cols-3 gap-6 md:gap-8">
-                            
                             {/* LEFT PANEL: CALENDAR */}
                             <div className={`lg:col-span-2 ${theme.panel} backdrop-blur-md rounded-3xl p-3 sm:p-5 md:p-8 border relative overflow-hidden`}>
                                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -495,63 +807,59 @@
                                             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-mono tracking-tight text-gradient" dir="ltr">
                                                 {currentDate.toLocaleString(language === 'ar' ? 'ar-SA' : 'id-ID', { month: 'long' })} {formatNumber(currentDate.getFullYear(), language)} {language === 'ar' ? 'م' : 'M'}
                                             </h2>
-                                            <p className={`text-sm md:text-base font-medium mt-1 ${theme.textMuted}`}>
-                                                {currentHijriInfo.monthStr} {formatNumber(currentHijriInfo.year, language)} {language === 'ar' ? 'هـ' : 'H'}
-                                            </p>
+                                            <p className={`text-sm md:text-base font-medium mt-1 ${theme.textMuted}`}>{currentHijriInfo.monthStr} {formatNumber(currentHijriInfo.year, language)} {language === 'ar' ? 'هـ' : 'H'}</p>
                                         </div>
                                         <div className={`flex items-center gap-2 sm:gap-3 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                            <button onClick={prevMonth} className={`p-2 rounded-full ${theme.card} ${theme.hoverCard} border transition-all hover:scale-105`}>
-                                                <IconChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                                            </button>
-                                            <button onClick={goToday} className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-gradient-feminine text-white shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5">
-                                                {tString.today}
-                                            </button>
-                                            <button onClick={nextMonth} className={`p-2 rounded-full ${theme.card} ${theme.hoverCard} border transition-all hover:scale-105`}>
-                                                <IconChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                                            </button>
+                                            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} className={`p-2 rounded-full ${theme.card} ${theme.hoverCard} border transition-all hover:scale-105`}><IconChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" /></button>
+                                            <button onClick={() => {const t = new Date(); setCurrentDate(t); setSelectedDate(t);}} className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-gradient-feminine text-white shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5">{tString.today}</button>
+                                            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} className={`p-2 rounded-full ${theme.card} ${theme.hoverCard} border transition-all hover:scale-105`}><IconChevronRight className="w-4 h-4 sm:w-5 sm:h-5" /></button>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-7 gap-1 sm:gap-2 md:gap-3 mb-2 text-center">
-                                        {tString.days.map((day, idx) => (
-                                            <div key={day} className={`text-[10px] sm:text-xs md:text-sm font-bold uppercase ${idx === 0 || idx === 6 ? 'text-rose-400' : theme.textMuted}`}>
-                                                {day}
-                                            </div>
-                                        ))}
+                                        {tString.days.map((day, idx) => <div key={day} className={`text-[10px] sm:text-xs md:text-sm font-bold uppercase ${idx === 0 || idx === 6 ? 'text-rose-400' : theme.textMuted}`}>{day}</div>)}
                                     </div>
 
                                     <div className="grid grid-cols-7 gap-1 sm:gap-2 md:gap-3">
                                         {grid.map((item, idx) => {
                                             const isSelected = formatDateKey(item.date) === selectedDateKey;
                                             const isToday = formatDateKey(item.date) === formatDateKey(new Date());
-                                            const hasUserEvent = events[formatDateKey(item.date)]?.length > 0;
-                                            const hasIslamicEvent = item.islamicEvents.length > 0;
+                                            const quranTaskObj = quranData.schedule[formatDateKey(item.date)];
                                             
+                                            const hasQuran = quranTaskObj !== undefined && !quranTaskObj.isHaidPause;
+                                            
+                                            const hasHaid = item.healthEvents.some(e => e.type === 'health_haid');
+                                            const hasHpl = item.healthEvents.some(e => e.type === 'health_hpl');
+                                            const hasKajian = item.routineEvents.some(e => e.type === 'routine_kajian');
+                                            const hasKuliah = item.routineEvents.some(e => e.type === 'routine_kuliah');
+
                                             return (
-                                                <div 
-                                                    key={idx} onClick={() => setSelectedDate(item.date)}
+                                                <div key={idx} onClick={() => setSelectedDate(item.date)}
                                                     className={`
                                                         relative cursor-pointer rounded-lg md:rounded-2xl p-1.5 md:p-3 min-h-[55px] sm:min-h-[70px] md:min-h-[85px] flex flex-col justify-between border transition-all duration-300 transform overflow-hidden
                                                         ${!item.isCurrentMonth ? 'opacity-40 grayscale' : ''}
                                                         ${isSelected ? 'bg-gradient-feminine text-white shadow-[0_4px_15px_rgb(140,82,255,0.4)] scale-105 z-10 border-transparent' : `${theme.card} ${theme.hoverCard} ${theme.border} hover:-translate-y-1`}
+                                                        ${hasHaid && !isSelected && isDayTime ? 'bg-pink-50 border-pink-200' : ''}
+                                                        ${hasHaid && !isSelected && !isDayTime ? 'bg-pink-900/20 border-pink-500/30' : ''}
+                                                        ${hasHpl && !isSelected && isDayTime ? 'bg-fuchsia-100 border-fuchsia-300' : ''}
+                                                        ${hasHpl && !isSelected && !isDayTime ? 'bg-fuchsia-900/40 border-fuchsia-500/50' : ''}
                                                     `}
                                                 >
                                                     <div className="flex justify-between items-start w-full relative" dir="ltr">
-                                                        <span className={`text-[9px] sm:text-[10px] md:text-xs font-bold leading-none mt-0.5 ${isSelected ? 'text-fuchsia-100' : 'text-primary opacity-80'}`}>
-                                                            {formatNumber(item.hijri.day, language)}
-                                                        </span>
-                                                        <span className={`text-xs sm:text-sm md:text-lg font-bold font-mono leading-none ${isSelected ? 'text-white' : (isToday ? 'text-primary' : theme.text)}`}>
-                                                            {formatNumber(item.day, language)}
-                                                        </span>
+                                                        <span className={`text-[9px] sm:text-[10px] md:text-xs font-bold leading-none mt-0.5 ${isSelected ? 'text-fuchsia-100' : 'text-primary opacity-80'}`}>{formatNumber(item.hijri.day, language)}</span>
+                                                        <span className={`text-xs sm:text-sm md:text-lg font-bold font-mono leading-none ${isSelected ? 'text-white' : (isToday ? 'text-primary' : theme.text)}`}>{formatNumber(item.day, language)}</span>
                                                     </div>
                                                     
                                                     <div className="mt-auto pt-1 w-full flex flex-wrap justify-center gap-0.5 md:gap-1">
-                                                        {hasIslamicEvent && item.islamicEvents.map((ev, i) => (
-                                                            <div key={i} title={ev.title} className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${ev.type === 'hari_besar' ? 'bg-rose-500' : (ev.type === 'puasa_wajib' ? 'bg-amber-400' : 'bg-emerald-400')}`}></div>
-                                                        ))}
-                                                        {hasUserEvent && (
-                                                            <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${isSelected ? 'bg-white' : 'bg-primary'} animate-pulse`}></div>
-                                                        )}
+                                                        {item.islamicEvents.map((ev, i) => {
+                                                            if (ev.type === 'bulan_haram' || ev.type === 'jumat_mustajab') return null; // Sembunyikan dot agar kalender tidak terlalu penuh (hanya muncul di list agenda)
+                                                            return <div key={`isl-${i}`} className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${ev.type === 'hari_besar' ? 'bg-rose-500' : (ev.type === 'puasa_wajib' ? 'bg-amber-400' : (ev.type === 'itikaf' ? 'bg-indigo-400' : 'bg-emerald-400'))}`}></div>
+                                                        })}
+                                                        {item.healthEvents.map((ev, i) => <div key={`hlth-${i}`} className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${ev.type === 'health_haid' ? 'bg-pink-500' : ev.type === 'health_suci' ? 'bg-sky-400' : 'bg-fuchsia-500'}`}></div>)}
+                                                        {hasKajian && <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full bg-orange-500`}></div>}
+                                                        {hasKuliah && <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full bg-teal-500`}></div>}
+                                                        {hasQuran && <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${isSelected ? 'bg-indigo-200' : 'bg-indigo-500'}`}></div>}
+                                                        {events[formatDateKey(item.date)]?.length > 0 && <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full ${isSelected ? 'bg-white' : 'bg-primary'} animate-pulse`}></div>}
                                                     </div>
                                                 </div>
                                             )
@@ -565,70 +873,107 @@
                                 <div className="mb-6 border-b border-fuchsia-500/20 pb-4 flex justify-between items-center">
                                     <div>
                                         <h3 className="text-xl font-bold text-gradient">{tString.dailyAgenda}</h3>
-                                        <p className={`text-sm mt-1 font-medium ${theme.textMuted}`} dir="ltr">
-                                            {language === 'ar' ? formatNumber(selectedDate.toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), 'ar') : selectedDate.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} {language === 'ar' ? 'م' : 'M'}
-                                        </p>
-                                        <p className={`text-[10px] uppercase font-bold tracking-widest mt-0.5 text-primary`} dir="ltr">
-                                            {formatNumber(selectedHijriInfo.day, language)} {selectedHijriInfo.monthStr} {formatNumber(selectedHijriInfo.year, language)} {language === 'ar' ? 'هـ' : 'H'}
-                                        </p>
+                                        <p className={`text-sm mt-1 font-medium ${theme.textMuted}`} dir="ltr">{language === 'ar' ? formatNumber(selectedDate.toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), 'ar') : selectedDate.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} {language === 'ar' ? 'م' : 'M'}</p>
+                                        <p className={`text-[10px] uppercase font-bold tracking-widest mt-0.5 text-primary`} dir="ltr">{formatNumber(selectedHijriInfo.day, language)} {selectedHijriInfo.monthStr} {formatNumber(selectedHijriInfo.year, language)} {language === 'ar' ? 'هـ' : 'H'}</p>
                                     </div>
-                                    <button 
-                                        onClick={() => setIsFormOpen(!isFormOpen)}
-                                        className="w-10 h-10 rounded-full bg-gradient-feminine text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform flex-shrink-0"
-                                    >
-                                        <IconPlus className={`w-5 h-5 transition-transform duration-300 ${isFormOpen ? 'rotate-45' : ''}`} />
-                                    </button>
+                                    <button onClick={() => setIsFormOpen(!isFormOpen)} className="w-10 h-10 rounded-full bg-gradient-feminine text-white flex items-center justify-center shadow-md hover:scale-110 transition-transform flex-shrink-0"><IconPlus className={`w-5 h-5 transition-transform duration-300 ${isFormOpen ? 'rotate-45' : ''}`} /></button>
                                 </div>
 
                                 {isFormOpen && (
                                     <form onSubmit={handleAddEvent} className={`mb-6 p-4 rounded-2xl border ${theme.border} bg-fuchsia-500/5 animate-fade-in`}>
-                                        <div className="mb-3">
-                                            <input type="text" placeholder={tString.titleLabel} required value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm font-medium`} />
-                                        </div>
+                                        <div className="mb-3"><input type="text" placeholder={tString.titleLabel} required value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm font-medium`} /></div>
                                         <div className="flex gap-3 mb-3">
-                                            <div className="flex-1">
-                                                <label className={`block text-[10px] uppercase mb-1 font-bold ${theme.textMuted}`}>{tString.start}</label>
-                                                <input type="time" required value={newEvent.start} onChange={e => setNewEvent({...newEvent, start: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-bold`} />
-                                            </div>
-                                            <div className="flex-1">
-                                                <label className={`block text-[10px] uppercase mb-1 font-bold ${theme.textMuted}`}>{tString.end}</label>
-                                                <input type="time" required value={newEvent.end} onChange={e => setNewEvent({...newEvent, end: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-bold`} />
-                                            </div>
+                                            <div className="flex-1"><label className={`block text-[10px] uppercase mb-1 font-bold ${theme.textMuted}`}>{tString.start}</label><input type="time" required value={newEvent.start} onChange={e => setNewEvent({...newEvent, start: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-bold`} /></div>
+                                            <div className="flex-1"><label className={`block text-[10px] uppercase mb-1 font-bold ${theme.textMuted}`}>{tString.end}</label><input type="time" required value={newEvent.end} onChange={e => setNewEvent({...newEvent, end: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-bold`} /></div>
                                         </div>
-                                        <div className="mb-4">
-                                            <textarea placeholder={tString.descPlaceholder} rows="2" value={newEvent.desc} onChange={e => setNewEvent({...newEvent, desc: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm resize-none`}></textarea>
-                                        </div>
-                                        <button type="submit" className="w-full py-2.5 rounded-xl bg-gradient-feminine text-white text-sm font-bold shadow-md hover:shadow-lg transition-all">
-                                            {tString.saveAgenda}
-                                        </button>
+                                        <div className="mb-4"><textarea placeholder={tString.descPlaceholder} rows="2" value={newEvent.desc} onChange={e => setNewEvent({...newEvent, desc: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm resize-none`}></textarea></div>
+                                        <button type="submit" className="w-full py-2.5 rounded-xl bg-gradient-feminine text-white text-sm font-bold shadow-md hover:shadow-lg transition-all">{tString.saveAgenda}</button>
                                     </form>
                                 )}
 
                                 <div className={`flex-1 overflow-y-auto pb-4 space-y-4 ${language === 'ar' ? 'pl-2' : 'pr-2'}`}>
                                     
-                                    {selectedIslamicEvents.map((event, idx) => (
-                                        <div key={`islamic-${idx}`} className={`p-4 rounded-2xl border ${isDayTime ? getEventColor(event.type) : getDarkEventColor(event.type)} relative overflow-hidden group animate-fade-in shadow-sm`}>
-                                            <div className={`absolute top-0 ${language === 'ar' ? 'right-0' : 'left-0'} bottom-0 w-1.5 ${getRibbonColor(event.type)}`}></div>
-                                            
+                                    {/* QURAN TASK */}
+                                    {selectedQuranTask && (
+                                        <div className={`p-4 rounded-2xl border relative overflow-hidden group animate-fade-in shadow-sm ${selectedQuranTask.isHaidPause ? (isDayTime ? 'bg-pink-50 border-pink-200' : 'bg-pink-900/30 border-pink-500/50') : (isDayTime ? 'bg-indigo-50 border-indigo-200' : 'bg-indigo-900/30 border-indigo-500/50')}`}>
+                                            <div className={`absolute top-0 ${language === 'ar' ? 'right-0' : 'left-0'} bottom-0 w-1.5 ${selectedQuranTask.isHaidPause ? 'bg-pink-500' : 'bg-indigo-500'}`}></div>
                                             <div className={`${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    {getIconForType(event.type)}
-                                                    <h4 className="font-bold text-base md:text-lg tracking-tight leading-tight">{event.title}</h4>
-                                                </div>
-                                                <div className="inline-block px-2 py-0.5 rounded-md bg-black/5 text-[10px] font-bold uppercase tracking-wider mb-3">
-                                                    {event.desc}
-                                                </div>
                                                 
-                                                <div className="space-y-2 mt-2">
-                                                    <div className="flex items-start gap-2">
-                                                        <IconBookOpen className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
-                                                        <p className="text-[11px] leading-relaxed italic opacity-90"><strong className="not-italic opacity-100">{tString.dalilLabel}:</strong> {event.dalil}</p>
+                                                {selectedQuranTask.isHaidPause ? (
+                                                    <div>
+                                                        <div className="inline-block px-2 py-0.5 rounded-md bg-pink-500/20 text-pink-700 dark:text-pink-300 text-[10px] font-bold uppercase tracking-wider mb-2">
+                                                            {quranMode === 'tilawah' ? tString.modeTilawah : tString.modeTahfizh.split('(')[0]} - {tString.haidRestMsg}
+                                                        </div>
+                                                        <h4 className={`font-bold text-sm tracking-tight leading-tight ${isDayTime ? 'text-pink-900' : 'text-pink-100'} flex items-start gap-2`}>
+                                                            <IconHeart className="w-5 h-5 text-pink-500 shrink-0" /> {tString.haidRestDesc}
+                                                        </h4>
                                                     </div>
-                                                    <div className="flex items-start gap-2">
-                                                        <IconAward className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
-                                                        <p className="text-[11px] leading-relaxed opacity-90"><strong className="opacity-100">{tString.keutamaanLabel}:</strong> {event.keutamaan}</p>
+                                                ) : (
+                                                    <div>
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <div>
+                                                                <div className="inline-block px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold uppercase tracking-wider mb-2">
+                                                                    {quranMode === 'tilawah' ? tString.modeTilawah : tString.modeTahfizh.split('(')[0]} - {tString.todayTask} {formatNumber(selectedQuranTask.segmentIndex + 1, language)}
+                                                                </div>
+                                                                <h4 className={`font-bold text-base md:text-lg tracking-tight leading-tight ${isDayTime ? 'text-indigo-900' : 'text-indigo-100'} flex items-center gap-2`} dir={language==='ar' && quranMode!=='tahfizh' ? 'rtl':'ltr'}>
+                                                                    <IconBookOpen className="w-5 h-5 text-indigo-500" /> {selectedQuranTask.segmentName}
+                                                                </h4>
+                                                            </div>
+                                                            {selectedQuranTask.isMissed && !selectedQuranTask.isDone && <span className="bg-rose-500 text-white text-[9px] px-2 py-1 rounded-full font-bold uppercase">{tString.missed}</span>}
+                                                        </div>
+                                                        
+                                                        <button onClick={() => toggleQuranTask(selectedDateKey)} className={`mt-3 w-full py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all ${selectedQuranTask.isDone ? 'bg-indigo-500 text-white shadow-md' : 'border-2 border-indigo-400 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-500/10'}`}>
+                                                            <IconCheckCircle className="w-4 h-4" /> {selectedQuranTask.isDone ? tString.completed : tString.markDone}
+                                                        </button>
                                                     </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* SYSTEM EVENTS (ISLAMIC, HEALTH, ROUTINES) */}
+                                    {[...selectedIslamicEvents, ...selectedHealthEvents, ...selectedRoutineEvents].map((event, idx) => (
+                                        <div key={`sys-${idx}`} className={`p-4 rounded-2xl border ${isDayTime ? getEventColor(event.type) : getDarkEventColor(event.type)} relative overflow-hidden group animate-fade-in shadow-sm`}>
+                                            <div className={`absolute top-0 ${language === 'ar' ? 'right-0' : 'left-0'} bottom-0 w-1.5 ${getRibbonColor(event.type)}`}></div>
+                                            <div className={`${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-2">{getIconForType(event.type)}<h4 className="font-bold text-base md:text-lg tracking-tight leading-tight">{event.title}</h4></div>
+                                                        {event.start && event.end && <div className={`flex items-center gap-1.5 text-xs font-mono font-bold mb-2 opacity-80`} dir="ltr"><IconClock className="w-3.5 h-3.5" /> {formatNumber(event.start, language)} - {formatNumber(event.end, language)}</div>}
+                                                    </div>
+                                                    {event.type === 'routine_kuliah' && (
+                                                        <button onClick={() => setEditSessionObj({ id: event.originalId, dateKey: event.dateKey, topic: event.topic || '', link: event.link || '', task: event.task || '' })} className="p-1.5 bg-teal-500/10 hover:bg-teal-500/20 text-teal-600 rounded-lg"><IconEdit className="w-4 h-4" /></button>
+                                                    )}
                                                 </div>
+
+                                                {(event.desc || event.speaker || event.lecturer) && (
+                                                    <div className="inline-block px-2 py-0.5 rounded-md bg-black/5 text-[10px] font-bold uppercase tracking-wider mb-2">
+                                                        {event.desc || event.speaker || event.lecturer}
+                                                    </div>
+                                                )}
+                                                
+                                                {/* SECTION: TOPIK, LINK, TUGAS RUTINITAS */}
+                                                {(event.topic || event.link || event.task) && (
+                                                    <div className="space-y-2 mt-2 mb-2">
+                                                        {event.topic && <div className="flex items-start gap-2"><IconBriefcase className="w-4 h-4 mt-0.5 opacity-70 shrink-0" /><p className="text-[11px] leading-relaxed opacity-90"><strong className="opacity-100">{tString.topic}:</strong> {event.topic}</p></div>}
+                                                        {event.task && <div className="flex items-start gap-2"><IconClipboard className="w-4 h-4 mt-0.5 opacity-70 shrink-0" /><p className="text-[11px] leading-relaxed opacity-90"><strong className="opacity-100">{tString.task}:</strong> {event.task}</p></div>}
+                                                        {event.link && <div className="flex items-start gap-2"><IconLink className="w-4 h-4 mt-0.5 opacity-70 shrink-0" /><a href={event.link} target="_blank" rel="noreferrer" className="text-[11px] leading-relaxed opacity-90 underline text-blue-500 break-all">{event.link}</a></div>}
+                                                    </div>
+                                                )}
+
+                                                {/* SECTION: COLLAPSIBLE DALIL & KEUTAMAAN */}
+                                                {(event.dalil || event.keutamaan) && (
+                                                    <details className="mt-2 group outline-none cursor-pointer">
+                                                        <summary className="text-[10px] font-bold opacity-70 hover:opacity-100 transition-opacity flex items-center gap-1 select-none">
+                                                            <IconChevronRight className="w-3 h-3 transition-transform duration-200 group-open:rotate-90" />
+                                                            {language === 'ar' ? 'عرض التفاصيل والأدلة' : 'Lihat Detail Dalil & Keutamaan'}
+                                                        </summary>
+                                                        <div className="space-y-2 mt-2 pt-2 border-t border-black/10 dark:border-white/10 pl-1">
+                                                            {event.dalil && <div className="flex items-start gap-2"><IconBookOpen className="w-4 h-4 mt-0.5 opacity-70 shrink-0" /><p className="text-[11px] leading-relaxed italic opacity-90 text-justify"><strong className="not-italic opacity-100 block mb-0.5">{tString.dalilLabel}:</strong> {event.dalil}</p></div>}
+                                                            {event.keutamaan && <div className="flex items-start gap-2"><IconAward className="w-4 h-4 mt-0.5 opacity-70 shrink-0" /><p className="text-[11px] leading-relaxed opacity-90 text-justify"><strong className="opacity-100 block mb-0.5">{tString.keutamaanLabel}:</strong> {event.keutamaan}</p></div>}
+                                                        </div>
+                                                    </details>
+                                                )}
 
                                                 <div className="mt-4 flex gap-2">
                                                     <button onClick={() => exportToGoogle(event, true)} className="flex-1 py-1.5 px-2 bg-black/5 hover:bg-black/10 border border-black/10 rounded-lg text-[10px] font-bold uppercase flex items-center justify-center gap-1 transition-colors">
@@ -642,50 +987,72 @@
                                         </div>
                                     ))}
 
+                                    {/* USER EVENTS */}
                                     {currentDayEvents.map(event => (
                                         <div key={event.id} className={`p-4 rounded-2xl border ${theme.border} ${theme.card} group animate-fade-in relative overflow-hidden shadow-sm`}>
                                             <div className={`absolute top-0 ${language === 'ar' ? 'right-0' : 'left-0'} bottom-0 w-1 bg-gradient-feminine`}></div>
                                             <div className={`flex justify-between items-start ${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
                                                 <div className={`flex-1 ${language === 'ar' ? 'pl-3' : 'pr-3'}`}>
                                                     <h4 className={`font-bold text-base mb-1 ${theme.text}`}>{event.title}</h4>
-                                                    <div className={`flex items-center gap-1.5 text-xs font-mono font-medium ${theme.textMuted} mb-2`} dir="ltr">
-                                                        <IconClock className="w-3.5 h-3.5" /> {formatNumber(event.start, language)} - {formatNumber(event.end, language)}
-                                                    </div>
-                                                    {event.desc && (
-                                                        <p className={`text-[11px] ${theme.textMuted} leading-relaxed line-clamp-3`}>{event.desc}</p>
-                                                    )}
+                                                    <div className={`flex items-center gap-1.5 text-xs font-mono font-medium ${theme.textMuted} mb-2`} dir="ltr"><IconClock className="w-3.5 h-3.5" /> {formatNumber(event.start, language)} - {formatNumber(event.end, language)}</div>
+                                                    {event.desc && <p className={`text-[11px] ${theme.textMuted} leading-relaxed line-clamp-3`}>{event.desc}</p>}
                                                 </div>
-                                                <button onClick={() => handleDeleteEvent(selectedDateKey, event.id)} className="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition-colors">
-                                                    <IconTrash className="w-4 h-4" />
-                                                </button>
-                                            </div>
-
-                                            <div className={`mt-4 flex gap-2 ${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
-                                                <button onClick={() => exportToGoogle(event)} className="flex-1 py-1.5 px-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition-colors">
-                                                    {tString.exportGoogle}
-                                                </button>
-                                                <button onClick={() => exportToApple(event)} className={`flex-1 py-1.5 px-2 bg-slate-500/10 hover:bg-slate-500/20 ${isDayTime ? 'text-slate-700' : 'text-slate-300'} border border-slate-500/20 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition-colors`}>
-                                                    {tString.exportApple}
-                                                </button>
+                                                <button onClick={() => handleDeleteEvent(selectedDateKey, event.id)} className="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition-colors"><IconTrash className="w-4 h-4" /></button>
                                             </div>
                                         </div>
                                     ))}
 
-                                    {currentDayEvents.length === 0 && selectedIslamicEvents.length === 0 && (
-                                        <div className="flex flex-col items-center justify-center h-40 opacity-60">
-                                            <IconCalendar className={`w-12 h-12 mb-3 ${theme.textMuted}`} />
-                                            <p className={`text-sm font-medium ${theme.textMuted}`}>{tString.noAgenda}</p>
-                                        </div>
+                                    {!selectedQuranTask && currentDayEvents.length === 0 && selectedIslamicEvents.length === 0 && selectedHealthEvents.length === 0 && selectedRoutineEvents.length === 0 && (
+                                        <div className="flex flex-col items-center justify-center h-40 opacity-60"><IconCalendar className={`w-12 h-12 mb-3 ${theme.textMuted}`} /><p className={`text-sm font-medium ${theme.textMuted}`}>{tString.noAgenda}</p></div>
                                     )}
                                 </div>
                             </div>
                         </div>
+
+                        {/* DASHBOARD QURAN */}
+                        {quranEnabled && (
+                            <div className={`mt-6 md:mt-8 ${theme.panel} backdrop-blur-md rounded-3xl p-6 md:p-8 border animate-fade-in relative overflow-hidden`}>
+                                <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                                <div className="flex items-center gap-3 mb-6 border-b border-indigo-500/20 pb-4">
+                                    <div className="p-3 bg-gradient-quran rounded-xl text-white shadow-md"><IconBookOpen className="w-6 h-6" /></div>
+                                    <h3 className="text-xl md:text-2xl font-bold text-gradient">{tString.quranDashboard}</h3>
+                                </div>
+                                
+                                <div className="grid md:grid-cols-3 gap-6">
+                                    <div className="md:col-span-2">
+                                        <div className="flex justify-between items-end mb-2">
+                                            <span className={`text-sm font-bold uppercase tracking-wider ${theme.textMuted}`}>{tString.progressText}</span>
+                                            <span className="text-2xl font-black font-mono text-indigo-500">{formatNumber(Math.round((quranData.completedCount / quranData.targetTotal) * 100) || 0, language)}%</span>
+                                        </div>
+                                        <div className={`h-4 md:h-6 w-full ${isDayTime ? 'bg-indigo-100' : 'bg-indigo-900/40'} rounded-full overflow-hidden shadow-inner`}>
+                                            <div className="h-full bg-gradient-quran transition-all duration-1000 ease-out relative" style={{width: `${(quranData.completedCount / quranData.targetTotal) * 100}%`}}>
+                                                <div className="absolute right-0 top-0 bottom-0 w-4 bg-white/30 blur-sm"></div>
+                                            </div>
+                                        </div>
+                                        <div className={`flex justify-between mt-3 text-xs font-semibold ${theme.textMuted}`}>
+                                            <span>{tString.completed}: {formatNumber(quranData.completedCount, language)}</span>
+                                            <span>{tString.remaining}: {formatNumber(quranData.targetTotal - quranData.completedCount, language)}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className={`p-5 rounded-2xl border flex flex-col justify-center ${isDayTime ? 'bg-indigo-50 border-indigo-200' : 'bg-indigo-900/30 border-indigo-500/50'}`}>
+                                        <span className="text-xs font-bold uppercase text-indigo-500 mb-1">{tString.estKhatam}</span>
+                                        <span className={`text-lg md:text-xl font-bold ${isDayTime ? 'text-indigo-900' : 'text-indigo-100'}`} dir="ltr">
+                                            {quranData.projectedKhatam ? (language === 'ar' ? formatNumber(quranData.projectedKhatam.toLocaleDateString('ar-SA', { day: 'numeric', month: 'long', year: 'numeric' }), 'ar') : quranData.projectedKhatam.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })) : '-'}
+                                        </span>
+                                        <div className="mt-3 text-[10px] bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-3 py-1.5 rounded-lg inline-block font-semibold">
+                                            {quranMode === 'tilawah' ? tString.modeTilawah : tString.modeTahfizh.split('(')[0]} • {getTargetLabel(quranTarget, quranMode)}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* MODAL PENGATURAN */}
                     {isSettingsOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1a1128]/80 backdrop-blur-sm p-4 animate-fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                            <div className={`${theme.panel} border w-full max-w-lg rounded-3xl p-6 md:p-8 relative shadow-2xl`}>
+                        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#1a1128]/80 backdrop-blur-sm p-4 animate-fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                            <div className={`${theme.panel} border w-full max-w-4xl rounded-3xl p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto`}>
                                 <button onClick={() => setIsSettingsOpen(false)} className={`absolute top-4 ${language === 'ar' ? 'left-4' : 'right-4'} p-2 rounded-full hover:bg-fuchsia-500/20 transition-colors ${theme.text}`}>
                                     <IconX className="w-6 h-6" />
                                 </button>
@@ -694,37 +1061,239 @@
                                     <IconSettings className="w-7 h-7 text-primary" /> {tString.settings}
                                 </h2>
 
-                                <div className="space-y-5">
-                                    <div>
-                                        <label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.personalGreeting}</label>
-                                        <input type="text" name="userName" value={userName} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm`} />
-                                    </div>
-
-                                    <div>
-                                        <label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.language}</label>
-                                        <div className="flex rounded-xl overflow-hidden border border-primary">
-                                            <button onClick={() => {setLanguage('id'); safeSetItem('cal_lang', 'id')}} className={`flex-1 py-2 text-sm font-bold transition-colors ${language === 'id' ? 'bg-primary text-white' : `${theme.inputBg}`}`}>Indonesia</button>
-                                            <button onClick={() => {setLanguage('ar'); safeSetItem('cal_lang', 'ar')}} className={`flex-1 py-2 text-sm font-bold font-arabic transition-colors ${language === 'ar' ? 'bg-primary text-white' : `${theme.inputBg}`}`}>العربية</button>
+                                <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+                                    {/* Kolom 1: Umum */}
+                                    <div className="space-y-5">
+                                        <h3 className={`font-bold ${theme.text} border-b ${theme.border} pb-2`}>Umum</h3>
+                                        <div><label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.personalGreeting}</label><input type="text" name="userName" value={userName} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-4 py-2 border text-sm`} /></div>
+                                        <div>
+                                            <label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.language}</label>
+                                            <div className="flex rounded-xl overflow-hidden border border-primary">
+                                                <button onClick={() => {setLanguage('id'); safeSetItem('cal_lang', 'id')}} className={`flex-1 py-2 text-sm font-bold transition-colors ${language === 'id' ? 'bg-primary text-white' : `${theme.inputBg}`}`}>Indonesia</button>
+                                                <button onClick={() => {setLanguage('ar'); safeSetItem('cal_lang', 'ar')}} className={`flex-1 py-2 text-sm font-bold font-arabic transition-colors ${language === 'ar' ? 'bg-primary text-white' : `${theme.inputBg}`}`}>العربية</button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.hijriAdjustment}</label>
+                                            <select name="hijriOffset" value={hijriOffset} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-medium`}><option value="-1">{tString.offsetMinus1}</option><option value="0">{tString.offset0}</option><option value="1">{tString.offsetPlus1}</option></select>
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <label className={`block font-semibold ${theme.text} mb-2 text-sm`}>{tString.hijriAdjustment}</label>
-                                        <select name="hijriOffset" value={hijriOffset} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm font-medium`}>
-                                            <option value="-1">{tString.offsetMinus1}</option>
-                                            <option value="0">{tString.offset0}</option>
-                                            <option value="1">{tString.offsetPlus1}</option>
-                                        </select>
+                                    {/* Kolom 2: Quran */}
+                                    <div className="space-y-5">
+                                        <h3 className={`font-bold ${theme.text} border-b ${theme.border} pb-2 flex items-center gap-2`}><IconBookOpen className="w-5 h-5 text-indigo-500" /> {tString.quranSettings}</h3>
+                                        <label className="relative flex items-center cursor-pointer gap-3 p-3 rounded-xl border border-indigo-500/30 bg-indigo-500/10">
+                                            <input type="checkbox" className="sr-only peer" name="quranEnabled" checked={quranEnabled} onChange={handleSaveSettings} />
+                                            <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[14px] after:left-[14px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+                                            <span className={`text-sm font-bold ${theme.text}`}>{tString.quranToggle}</span>
+                                        </label>
+
+                                        {quranEnabled && (
+                                            <div className="space-y-4 animate-fade-in">
+                                                <div>
+                                                    <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.quranMode}</label>
+                                                    <select name="quranMode" value={quranMode} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`}>
+                                                        <option value="tilawah">{tString.modeTilawah}</option>
+                                                        <option value="tahfizh">{tString.modeTahfizh}</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.quranTarget}</label>
+                                                    {quranMode === 'tilawah' ? (
+                                                        <select name="quranTarget" value={quranTarget} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`}>
+                                                            <option value="6">{tString.target6}</option>
+                                                            <option value="7">{tString.target7}</option>
+                                                            <option value="10">{tString.target10}</option>
+                                                            <option value="30">{tString.target30}</option>
+                                                            <option value="60">{tString.target60}</option>
+                                                        </select>
+                                                    ) : (
+                                                        <select name="quranTarget" value={quranTarget} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`}>
+                                                            <option value="t_0.5">{tString.targetHalfPage}</option>
+                                                            <option value="t_1">{tString.target1Page}</option>
+                                                            <option value="t_2">{tString.target2Pages}</option>
+                                                            <option value="t_3">{tString.target3Pages}</option>
+                                                        </select>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.startDate}</label>
+                                                    <input type="date" name="quranStartDate" value={quranStartDate} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
-                                    <div className={`p-4 rounded-xl border ${theme.border} bg-fuchsia-500/5`}>
-                                        <h4 className="font-bold mb-2 flex items-center gap-2 text-sm"><IconInfo className="w-4 h-4 text-primary"/> Info Matla'</h4>
-                                        <p className={`text-xs leading-relaxed ${theme.textMuted} text-justify`}>
-                                            {tString.hijriDesc}
-                                        </p>
+                                    {/* Kolom 3: Kewanitaan */}
+                                    <div className="space-y-5">
+                                        <h3 className={`font-bold ${theme.text} border-b ${theme.border} pb-2 flex items-center gap-2`}><IconHeart className="w-5 h-5 text-pink-500" /> {tString.healthSettings}</h3>
+                                        <label className="relative flex items-center cursor-pointer gap-3 p-3 rounded-xl border border-pink-500/30 bg-pink-500/10">
+                                            <input type="checkbox" className="sr-only peer" name="healthEnabled" checked={healthEnabled} onChange={handleSaveSettings} />
+                                            <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[14px] after:left-[14px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                                            <span className={`text-sm font-bold ${theme.text}`}>{tString.healthToggle}</span>
+                                        </label>
+
+                                        {healthEnabled && (
+                                            <div className="space-y-4 animate-fade-in">
+                                                <div>
+                                                    <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.hphtLabel}</label>
+                                                    <input type="date" name="hpht" value={hpht} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
+                                                </div>
+
+                                                <label className="relative flex items-center cursor-pointer gap-3">
+                                                    <input type="checkbox" className="sr-only peer" name="isPregnant" checked={isPregnant} onChange={handleSaveSettings} />
+                                                    <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-fuchsia-500"></div>
+                                                    <span className={`text-xs font-semibold ${theme.text}`}>{tString.pregnantLabel}</span>
+                                                </label>
+
+                                                {!isPregnant && (
+                                                    <div className="flex gap-3">
+                                                        <div className="flex-1">
+                                                            <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.cycleLabel}</label>
+                                                            <input type="number" min="15" name="cycle" value={cycle} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.durationLabel}</label>
+                                                            <input type="number" min="1" max="15" name="haidDuration" value={haidDuration} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    )}
+
+                    {/* MODAL DASHBOARD RUTINITAS (KAJIAN & KULIAH) */}
+                    {isRoutineOpen && (
+                        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#1a1128]/80 backdrop-blur-sm p-4 animate-fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                            <div className={`${theme.panel} border w-full max-w-2xl rounded-3xl p-6 md:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto`}>
+                                <button onClick={() => setIsRoutineOpen(false)} className={`absolute top-4 ${language === 'ar' ? 'left-4' : 'right-4'} p-2 rounded-full hover:bg-fuchsia-500/20 transition-colors ${theme.text}`}>
+                                    <IconX className="w-6 h-6" />
+                                </button>
+                                
+                                <h2 className={`text-xl md:text-2xl font-bold mb-6 flex items-center gap-3 text-gradient border-b ${theme.border} pb-4`}>
+                                    <IconBriefcase className="w-7 h-7 text-primary" /> {tString.routineDashboard}
+                                </h2>
+
+                                {/* TABS */}
+                                <div className="flex rounded-xl overflow-hidden border border-primary mb-6">
+                                    <button onClick={() => setRoutineTab('kajian')} className={`flex-1 py-2.5 text-sm font-bold transition-colors flex justify-center items-center gap-2 ${routineTab === 'kajian' ? 'bg-primary text-white' : `${theme.inputBg}`}`}><IconMic className="w-4 h-4"/>{tString.kajianTab}</button>
+                                    <button onClick={() => setRoutineTab('kuliah')} className={`flex-1 py-2.5 text-sm font-bold transition-colors flex justify-center items-center gap-2 ${routineTab === 'kuliah' ? 'bg-primary text-white' : `${theme.inputBg}`}`}><IconBriefcase className="w-4 h-4"/>{tString.kuliahTab}</button>
+                                </div>
+
+                                {routineTab === 'kajian' && (
+                                    <div className="space-y-6">
+                                        <form onSubmit={handleAddKajian} className={`p-5 rounded-2xl border ${theme.border} bg-orange-500/5`}>
+                                            <h3 className={`font-bold mb-4 ${theme.text}`}>{tString.addRoutine} ({tString.kajianTab})</h3>
+                                            <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                                <div><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.topic}</label><input type="text" required value={newKajian.title} onChange={e=>setNewKajian({...newKajian, title: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} /></div>
+                                                <div><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.speaker}</label><input type="text" required value={newKajian.speaker} onChange={e=>setNewKajian({...newKajian, speaker: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} /></div>
+                                                
+                                                <div>
+                                                    <label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.recurrence}</label>
+                                                    <select value={newKajian.recurrence} onChange={e=>setNewKajian({...newKajian, recurrence: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`}>
+                                                        <option value="weekly">{tString.weekly}</option><option value="monthly">{tString.monthly}</option><option value="none">{tString.none}</option>
+                                                    </select>
+                                                </div>
+                                                {newKajian.recurrence === 'weekly' && (
+                                                    <div>
+                                                        <label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.dayOfWeek}</label>
+                                                        <select value={newKajian.dayOfWeek} onChange={e=>setNewKajian({...newKajian, dayOfWeek: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`}>
+                                                            {tString.days.map((d, i) => <option key={i} value={i}>{d}</option>)}
+                                                        </select>
+                                                    </div>
+                                                )}
+                                                {newKajian.recurrence === 'monthly' && (
+                                                    <div><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.dateOfMonth}</label><input type="number" min="1" max="31" value={newKajian.dateOfMonth} onChange={e=>setNewKajian({...newKajian, dateOfMonth: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} /></div>
+                                                )}
+                                                
+                                                <div className="flex gap-2">
+                                                    <div className="flex-1"><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.start}</label><input type="time" required value={newKajian.start} onChange={e=>setNewKajian({...newKajian, start: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-2 py-2 border text-sm`} /></div>
+                                                    <div className="flex-1"><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.end}</label><input type="time" required value={newKajian.end} onChange={e=>setNewKajian({...newKajian, end: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-2 py-2 border text-sm`} /></div>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <div className="flex-1"><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>Dari Tgl</label><input type="date" required value={newKajian.startDate} onChange={e=>setNewKajian({...newKajian, startDate: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-2 py-2 border text-sm`} /></div>
+                                                    <div className="flex-1"><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>Sampai Tgl (Opsional)</label><input type="date" value={newKajian.endDate} onChange={e=>setNewKajian({...newKajian, endDate: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-2 py-2 border text-sm`} /></div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" className="w-full py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold transition-colors">{tString.save}</button>
+                                        </form>
+                                        
+                                        <div className="space-y-3">
+                                            {kajianSchedules.map(k => (
+                                                <div key={k.id} className={`p-4 rounded-xl border border-orange-500/30 flex justify-between items-center ${isDayTime ? 'bg-orange-50' : 'bg-orange-900/20'}`}>
+                                                    <div>
+                                                        <h4 className="font-bold text-orange-600 dark:text-orange-400">{k.title}</h4>
+                                                        <p className={`text-xs ${theme.textMuted} mt-1`} dir="ltr"><IconMic className="w-3 h-3 inline mr-1"/>{k.speaker} | <IconClock className="w-3 h-3 inline mr-1"/>{k.start}-{k.end} | {k.recurrence === 'weekly' ? tString.days[k.dayOfWeek] : (k.recurrence==='monthly' ? `Tgl ${k.dateOfMonth}` : 'Sekali')}</p>
+                                                    </div>
+                                                    <button onClick={() => {const up=kajianSchedules.filter(x=>x.id!==k.id); setKajianSchedules(up); safeSetItem('cal_kajian', up);}} className="text-rose-500 p-2 hover:bg-rose-500/10 rounded"><IconTrash className="w-4 h-4"/></button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {routineTab === 'kuliah' && (
+                                    <div className="space-y-6">
+                                        <form onSubmit={handleAddKuliah} className={`p-5 rounded-2xl border ${theme.border} bg-teal-500/5`}>
+                                            <h3 className={`font-bold mb-4 ${theme.text}`}>{tString.addRoutine} ({tString.kuliahTab})</h3>
+                                            <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                                <div><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.subject}</label><input type="text" required value={newKuliah.subject} onChange={e=>setNewKuliah({...newKuliah, subject: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} /></div>
+                                                <div><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.speaker}</label><input type="text" required value={newKuliah.lecturer} onChange={e=>setNewKuliah({...newKuliah, lecturer: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} /></div>
+                                                
+                                                <div>
+                                                    <label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.dayOfWeek}</label>
+                                                    <select value={newKuliah.dayOfWeek} onChange={e=>setNewKuliah({...newKuliah, dayOfWeek: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`}>
+                                                        {tString.days.map((d, i) => <option key={i} value={i}>{d}</option>)}
+                                                    </select>
+                                                </div>
+                                                
+                                                <div className="flex gap-2">
+                                                    <div className="flex-1"><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.start}</label><input type="time" required value={newKuliah.start} onChange={e=>setNewKuliah({...newKuliah, start: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-2 py-2 border text-sm`} /></div>
+                                                    <div className="flex-1"><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.end}</label><input type="time" required value={newKuliah.end} onChange={e=>setNewKuliah({...newKuliah, end: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-2 py-2 border text-sm`} /></div>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <div className="flex-1"><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>Dari Tgl (Semester)</label><input type="date" required value={newKuliah.startDate} onChange={e=>setNewKuliah({...newKuliah, startDate: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-2 py-2 border text-sm`} /></div>
+                                                    <div className="flex-1"><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>Sampai Tgl</label><input type="date" required value={newKuliah.endDate} onChange={e=>setNewKuliah({...newKuliah, endDate: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-2 py-2 border text-sm`} /></div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" className="w-full py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-bold transition-colors">{tString.save}</button>
+                                        </form>
+                                        
+                                        <div className="space-y-3">
+                                            {kuliahSchedules.map(k => (
+                                                <div key={k.id} className={`p-4 rounded-xl border border-teal-500/30 flex justify-between items-center ${isDayTime ? 'bg-teal-50' : 'bg-teal-900/20'}`}>
+                                                    <div>
+                                                        <h4 className="font-bold text-teal-600 dark:text-teal-400">{k.subject}</h4>
+                                                        <p className={`text-xs ${theme.textMuted} mt-1`} dir="ltr"><IconBriefcase className="w-3 h-3 inline mr-1"/>{k.lecturer} | <IconClock className="w-3 h-3 inline mr-1"/>{k.start}-{k.end} | {tString.days[k.dayOfWeek]}</p>
+                                                    </div>
+                                                    <button onClick={() => {const up=kuliahSchedules.filter(x=>x.id!==k.id); setKuliahSchedules(up); safeSetItem('cal_kuliah', up);}} className="text-rose-500 p-2 hover:bg-rose-500/10 rounded"><IconTrash className="w-4 h-4"/></button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* MODAL EDIT SESI KULIAH */}
+                    {editSessionObj && (
+                        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                            <form onSubmit={saveSessionEdit} className={`${theme.panel} border border-teal-500/50 w-full max-w-sm rounded-2xl p-6 relative shadow-2xl`}>
+                                <button type="button" onClick={() => setEditSessionObj(null)} className={`absolute top-4 ${language === 'ar' ? 'left-4' : 'right-4'} p-1.5 rounded-full hover:bg-rose-500/20 text-rose-500 transition-colors`}><IconX className="w-5 h-5" /></button>
+                                <h3 className="font-bold text-teal-600 dark:text-teal-400 mb-5 flex items-center gap-2"><IconEdit className="w-5 h-5"/> {tString.editSession}</h3>
+                                
+                                <div className="space-y-4">
+                                    <div><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.topic}</label><input type="text" value={editSessionObj.topic} onChange={e=>setEditSessionObj({...editSessionObj, topic: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} /></div>
+                                    <div><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.link}</label><input type="url" placeholder="https://zoom.us/..." value={editSessionObj.link} onChange={e=>setEditSessionObj({...editSessionObj, link: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} dir="ltr" /></div>
+                                    <div><label className={`block text-xs font-semibold mb-1 ${theme.textMuted}`}>{tString.task}</label><textarea rows="3" value={editSessionObj.task} onChange={e=>setEditSessionObj({...editSessionObj, task: e.target.value})} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm resize-none`}></textarea></div>
+                                </div>
+                                <button type="submit" className="w-full mt-6 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-xl font-bold transition-colors">{tString.save}</button>
+                            </form>
                         </div>
                     )}
                 </div>
