@@ -1150,11 +1150,11 @@
                                                     <div className="flex gap-3">
                                                         <div className="flex-1">
                                                             <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.cycleLabel}</label>
-                                                            <input type="number" min="15" name="cycle" value={cycle} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
+                                                            <input type="number" name="cycle" value={cycle} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
                                                         </div>
                                                         <div className="flex-1">
                                                             <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.durationLabel}</label>
-                                                            <input type="number" min="1" max="15" name="haidDuration" value={haidDuration} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
+                                                            <input type="number" name="haidDuration" value={haidDuration} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
                                                         </div>
                                                     </div>
                                                 )}
