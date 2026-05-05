@@ -1,21 +1,22 @@
 {
   "name": "Muslimah Calender",
   "short_name": "Muslimah Cdr",
-  "start_url": ".",
-  "scope": "/muslimahcalender/",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0ea5e9",
+  "background_color": "#1a1128",
+  "theme_color": "#8c52ff",
   "icons": [
     {
-      "src": "./assets/icons/Date.png",
+      "src": "assets/icons/Date.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "./assets/icons/Date.png",
+      "src": "assets/icons/Date.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
