@@ -107,6 +107,7 @@
 
     <script>
         // Mendaftarkan Service Worker secara komprehensif agar syarat PWA (Installable) maksimal terpenuhi di Android/Chrome
+        // Ditambahkan scope dinamis agar 100% kompatibel saat di-deploy di subfolder (seperti GitHub Pages)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const swCode = `
@@ -115,9 +116,11 @@
                     self.addEventListener('fetch', (e) => { /* Bypass agar diakui offline-capable PWA oleh browser */ });
                 `;
                 const blob = new Blob([swCode], { type: 'application/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob))
-                    .then(() => console.log('PWA Service Worker Ready'))
-                    .catch(() => console.warn('PWA Service Worker Registration Failed'));
+                const swScope = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+                
+                navigator.serviceWorker.register(URL.createObjectURL(blob), { scope: swScope })
+                    .then(() => console.log('PWA Service Worker Ready pada scope: ' + swScope))
+                    .catch((err) => console.warn('PWA Service Worker Registration Failed:', err));
             });
         }
     </script>
