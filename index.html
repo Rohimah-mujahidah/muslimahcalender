@@ -106,21 +106,36 @@
     <div id="root"></div>
 
     <script>
-        // Mendaftarkan Service Worker secara komprehensif agar syarat PWA (Installable) maksimal terpenuhi di Android/Chrome
-        // Ditambahkan scope dinamis agar 100% kompatibel saat di-deploy di subfolder (seperti GitHub Pages)
+        // Mendaftarkan Service Worker (PWA)
+        // Perbaikan komprehensif untuk mencegah timeout/gagal saat instalasi "Add to Home Screen" di Android
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const swCode = `
-                    self.addEventListener('install', (e) => { e.waitUntil(self.skipWaiting()); });
-                    self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
-                    self.addEventListener('fetch', (e) => { /* Bypass agar diakui offline-capable PWA oleh browser */ });
+                    self.addEventListener('install', (e) => { 
+                        self.skipWaiting(); 
+                    });
+                    self.addEventListener('activate', (e) => { 
+                        e.waitUntil(self.clients.claim()); 
+                    });
+                    self.addEventListener('fetch', (e) => { 
+                        // Menyelesaikan request dengan benar agar Chrome WebAPK bot tidak timeout
+                        e.respondWith(
+                            fetch(e.request).catch(() => new Response('Aplikasi Offline', { 
+                                status: 200, 
+                                headers: { 'Content-Type': 'text/plain' } 
+                            }))
+                        );
+                    });
                 `;
                 const blob = new Blob([swCode], { type: 'application/javascript' });
                 const swScope = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
                 
                 navigator.serviceWorker.register(URL.createObjectURL(blob), { scope: swScope })
-                    .then(() => console.log('PWA Service Worker Ready pada scope: ' + swScope))
-                    .catch((err) => console.warn('PWA Service Worker Registration Failed:', err));
+                    .then((reg) => {
+                        console.log('PWA Service Worker berhasil didaftarkan pada scope:', swScope);
+                        reg.update(); // Memaksa update untuk memastikan validitas
+                    })
+                    .catch((err) => console.warn('PWA Service Worker gagal didaftarkan:', err));
             });
         }
     </script>
