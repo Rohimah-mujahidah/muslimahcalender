@@ -7,13 +7,24 @@
     
     <title>Kalender & Jadwal Harian Premium</title>
 
-    <!-- PWA & Installability Meta Tags -->
+    <!-- PWA & Installability Meta Tags Secara Komprehensif -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#8c52ff">
+    <meta name="description" content="Kalender Premium Masehi & Hijriah Terintegrasi dengan fitur lengkap.">
+    
+    <!-- Android / Chrome -->
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Kalender Premium">
+    
+    <!-- iOS / Apple -->
+    <link rel="apple-touch-icon" href="./assets/icons/Date.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Kalender Premium">
+    
+    <!-- Windows -->
+    <meta name="msapplication-TileColor" content="#8c52ff">
+    <meta name="msapplication-TileImage" content="./assets/icons/Date.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -79,17 +90,34 @@
         /* Menyembunyikan default panah details di browser */
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
+        
+        /* Menyembunyikan default spin button pada input number untuk mobile UI yang rapi */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-50 overflow-x-hidden">
     <div id="root"></div>
 
     <script>
+        // Mendaftarkan Service Worker secara komprehensif agar syarat PWA (Installable) maksimal terpenuhi di Android/Chrome
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                const swCode = "self.addEventListener('install', () => self.skipWaiting()); self.addEventListener('fetch', () => {});";
-                const blob = new Blob([swCode], { type: 'text/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+                const swCode = `
+                    self.addEventListener('install', (e) => { e.waitUntil(self.skipWaiting()); });
+                    self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
+                    self.addEventListener('fetch', (e) => { /* Bypass agar diakui offline-capable PWA oleh browser */ });
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob))
+                    .then(() => console.log('PWA Service Worker Ready'))
+                    .catch(() => console.warn('PWA Service Worker Registration Failed'));
             });
         }
     </script>
@@ -657,8 +685,8 @@
                 else if (t.name === 'hijriOffset') { const v = parseInt(t.value); setHijriOffset(v); safeSetItem('cal_hijri_offset', v); } 
                 else if (t.name === 'healthEnabled') { setHealthEnabled(t.checked); safeSetItem('cal_health_enabled', t.checked); } 
                 else if (t.name === 'hpht') { setHpht(t.value); safeSetItem('cal_health_hpht', t.value); } 
-                else if (name === 'cycle') { const v = value === '' ? '' : parseInt(value);  setCycle(v); if (v !== '' && !isNaN(v)) safeSetItem('cal_health_cycle', v);   } 
-                else if (name === 'haidDuration') {  const v = value === '' ? '' : parseInt(value);  setHaidDuration(v);  if (v !== '' && !isNaN(v)) safeSetItem('cal_health_duration', v);    } 
+                else if (t.name === 'cycle') { const v = parseInt(t.value) || 0; setCycle(v); safeSetItem('cal_health_cycle', v); } 
+                else if (t.name === 'haidDuration') { const v = parseInt(t.value) || 0; setHaidDuration(v); safeSetItem('cal_health_duration', v); } 
                 else if (t.name === 'isPregnant') { setIsPregnant(t.checked); safeSetItem('cal_health_pregnant', t.checked); }
                 else if (t.name === 'quranEnabled') { setQuranEnabled(t.checked); safeSetItem('cal_quran_enabled', t.checked); }
                 else if (t.name === 'quranMode') { 
@@ -668,6 +696,11 @@
                 }
                 else if (t.name === 'quranTarget') { setQuranTarget(t.value); safeSetItem('cal_quran_target', t.value); }
                 else if (t.name === 'quranStartDate') { setQuranStartDate(t.value); safeSetItem('cal_quran_start', t.value); }
+            };
+
+            const handleStepper = (name, currentVal, increment) => {
+                const newVal = Math.max(0, currentVal + increment);
+                handleSaveSettings({ target: { name, value: newVal, type: 'number' } });
             };
 
             const handleAddKajian = (e) => {
@@ -999,6 +1032,15 @@
                                                 </div>
                                                 <button onClick={() => handleDeleteEvent(selectedDateKey, event.id)} className="text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition-colors"><IconTrash className="w-4 h-4" /></button>
                                             </div>
+                                            
+                                            <div className={`mt-4 flex gap-2 ${language === 'ar' ? 'pr-2' : 'pl-2'}`}>
+                                                <button onClick={() => exportToGoogle(event)} className="flex-1 py-1.5 px-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition-colors">
+                                                    {tString.exportGoogle}
+                                                </button>
+                                                <button onClick={() => exportToApple(event)} className={`flex-1 py-1.5 px-2 bg-slate-500/10 hover:bg-slate-500/20 ${isDayTime ? 'text-slate-700' : 'text-slate-300'} border border-slate-500/20 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center transition-colors`}>
+                                                    {tString.exportApple}
+                                                </button>
+                                            </div>
                                         </div>
                                     ))}
 
@@ -1150,11 +1192,19 @@
                                                     <div className="flex gap-3">
                                                         <div className="flex-1">
                                                             <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.cycleLabel}</label>
-                                                            <input type="number" name="cycle" value={cycle} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
+                                                            <div className={`flex items-center w-full ${theme.inputBg} rounded-xl border overflow-hidden`}>
+                                                                <button type="button" onClick={() => handleStepper('cycle', cycle, -1)} className="px-3 py-2 text-primary hover:bg-primary/10 font-bold">-</button>
+                                                                <input type="number" name="cycle" value={cycle} onChange={handleSaveSettings} className="w-full bg-transparent text-center text-sm outline-none m-0 p-0" placeholder="28" />
+                                                                <button type="button" onClick={() => handleStepper('cycle', cycle, 1)} className="px-3 py-2 text-primary hover:bg-primary/10 font-bold">+</button>
+                                                            </div>
                                                         </div>
                                                         <div className="flex-1">
                                                             <label className={`block font-semibold ${theme.text} mb-1.5 text-xs`}>{tString.durationLabel}</label>
-                                                            <input type="number" name="haidDuration" value={haidDuration} onChange={handleSaveSettings} className={`w-full ${theme.inputBg} rounded-xl px-3 py-2 border text-sm`} />
+                                                            <div className={`flex items-center w-full ${theme.inputBg} rounded-xl border overflow-hidden`}>
+                                                                <button type="button" onClick={() => handleStepper('haidDuration', haidDuration, -1)} className="px-3 py-2 text-primary hover:bg-primary/10 font-bold">-</button>
+                                                                <input type="number" name="haidDuration" value={haidDuration} onChange={handleSaveSettings} className="w-full bg-transparent text-center text-sm outline-none m-0 p-0" placeholder="7" />
+                                                                <button type="button" onClick={() => handleStepper('haidDuration', haidDuration, 1)} className="px-3 py-2 text-primary hover:bg-primary/10 font-bold">+</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 )}
