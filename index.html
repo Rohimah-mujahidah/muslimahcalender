@@ -657,8 +657,8 @@
                 else if (t.name === 'hijriOffset') { const v = parseInt(t.value); setHijriOffset(v); safeSetItem('cal_hijri_offset', v); } 
                 else if (t.name === 'healthEnabled') { setHealthEnabled(t.checked); safeSetItem('cal_health_enabled', t.checked); } 
                 else if (t.name === 'hpht') { setHpht(t.value); safeSetItem('cal_health_hpht', t.value); } 
-                else if (t.name === 'cycle') { const v = Math.max(1, parseInt(t.value) || 28); setCycle(v); safeSetItem('cal_health_cycle', v); } 
-                else if (t.name === 'haidDuration') { const v = Math.min(28, Math.max(1, parseInt(t.value) || 1)); setHaidDuration(v); safeSetItem('cal_health_duration', v); } 
+                else if (name === 'cycle') { const v = value === '' ? '' : parseInt(value);  setCycle(v); if (v !== '' && !isNaN(v)) safeSetItem('cal_health_cycle', v);   } 
+                else if (name === 'haidDuration') {  const v = value === '' ? '' : parseInt(value);  setHaidDuration(v);  if (v !== '' && !isNaN(v)) safeSetItem('cal_health_duration', v);    } 
                 else if (t.name === 'isPregnant') { setIsPregnant(t.checked); safeSetItem('cal_health_pregnant', t.checked); }
                 else if (t.name === 'quranEnabled') { setQuranEnabled(t.checked); safeSetItem('cal_quran_enabled', t.checked); }
                 else if (t.name === 'quranMode') { 
